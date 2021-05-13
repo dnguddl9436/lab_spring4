@@ -7,6 +7,6 @@
 <title>Insert title here</title>
 </head>
 <body>
-spring4.x 테스트 성공
+spring4.x 테스트 성공 !
 </body>
 </html>
