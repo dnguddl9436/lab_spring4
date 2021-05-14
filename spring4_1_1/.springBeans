@@ -10,6 +10,7 @@
 		<config>WebContent/WEB-INF/spring-servlet.xml</config>
 		<config>WebContent/WEB-INF/spring-service.xml</config>
 		<config>WebContent/WEB-INF/spring-data.xml</config>
+		<config>src/local/di/sonataBean.xml</config>
 	</configs>
 	<autoconfigs>
 	</autoconfigs>
