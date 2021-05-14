@@ -8,7 +8,7 @@
 		<constructor-arg index="1" type="int" value="4"/>
 	</bean>
 	<bean id="meCar" class="local.di.Sonata" scope="session">
-		<constructor-arg index="0" type="java.lang.String" value="초록색"/>
+		<constructor-arg index="0" type="java.lang.String" value="바다색"/>
 		<constructor-arg index="1" type="int" value="4"/>
 		<constructor-arg index="2" type="int" value="100"/>
 	</bean>
