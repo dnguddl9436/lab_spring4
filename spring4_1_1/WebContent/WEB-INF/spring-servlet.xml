@@ -8,13 +8,27 @@
 		<property name="methodNameResolver" ref="emp-resolver"/>
 		<property name="empLogic" ref="emp-logic"/>
 	</bean>
+	<bean id="board-controller" class="web.mvc.Board41Controller">
+		<property name="methodNameResolver" ref="board-resolver"/>
+		<property name="boardLogic" ref="board-logic"/>
+	</bean>
 	<bean id="url-mapping" class="org.springframework.web.servlet.handler.SimpleUrlHandlerMapping">
 		<property name="mappings">
 			<props>
+				<prop key="/board/getBoardList.sp4">board-controller</prop>
+				<prop key="/board/jsonGetBoardList.sp4">board-controller</prop>
 				<prop key="/di/getEmpList.sp4">emp-controller</prop>
 				<prop key="/di/empInsert.sp4">emp-controller</prop>
 				<prop key="/di/empUpdate.sp4">emp-controller</prop>
 				<prop key="/di/empDelete.sp4">emp-controller</prop>
+			</props>
+		</property>
+	</bean>
+	<bean id="board-resolver" class="org.springframework.web.servlet.mvc.multiaction.PropertiesMethodNameResolver">
+		<property name="mappings">
+			<props>
+				<prop key="/board/getBoardList.sp4">getBoardList</prop>
+				<prop key="/board/jsonGetBoardList.sp4">jsonGetBoardList</prop>
 			</props>
 		</property>
 	</bean>
