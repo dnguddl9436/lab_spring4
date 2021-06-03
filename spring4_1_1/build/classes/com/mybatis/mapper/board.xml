@@ -3,6 +3,12 @@
  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.mybatis.mapper.BoardMapper">
+	<select id="getBoardList" parameterType="map" resultType="map">
+		select bm.bm_no, bm.bm_title, bm.bm_date, bs.bs_file, bm.bm_hit
+		  from board_master2019 bm
+		      ,board_sub2019 bs
+		 where bm.bm_no = bs.bm_no(+)
+	</select>
 	<select id="test" parameterType="map" resultType="string">
 		select TO_CHAR(sysdate, 'YYYY-MM-DD') from dual
 	</select>

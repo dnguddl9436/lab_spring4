@@ -4,12 +4,11 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>게시판 구현 - webapp</title>
+<title>Insert title here</title>
 <jsp:include page="../common/commonUIglobal.jsp" flush="false"/>
 </head>
 <body>
-
-<table class="easyui-datagrid" data-options="title:'게시판', toolbar:'#tb_board'">
+<table class="easyui-datagrid">
     <thead>
         <tr>
             <th data-options="field:'code'">Code</th>
@@ -26,11 +25,5 @@
         </tr>
     </tbody>
 </table>
-<div id="tb_board" style="padding:2px 5px;">
-    <a href="#" class="easyui-linkbutton" iconCls="icon-add" plain="true">조회</a>
-    <a href="#" class="easyui-linkbutton" iconCls="icon-edit" plain="true">수정</a>
-    <a href="#" class="easyui-linkbutton" iconCls="icon-save" plain="true">저장</a>
-    <a href="#" class="easyui-linkbutton" iconCls="icon-cut" plain="true">삭제</a>
-</div>
 </body>
 </html>

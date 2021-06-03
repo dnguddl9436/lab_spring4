@@ -3,5 +3,8 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
 	<bean id="emp-logic" class="kosmo80.mvc.sp4.EmpLogic"/>
-	<bean id="board-logic" class="web.mvc.Board41Logic"/>
+	<bean id="board-logic" class="web.mvc.Board41Logic">
+		<property name="boardMDao" ref="board-mdao"/>
+		<property name="boardSDao" ref="board-sdao"/>
+	</bean>
 </beans>

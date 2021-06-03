@@ -23,7 +23,10 @@
 	<bean id="sqlSessionTemplate" class="org.mybatis.spring.SqlSessionTemplate">
 		<constructor-arg index="0" ref="sqlSessionFactory"/>
 	</bean>
-	<bean id="boardMDao" class="web.mvc.Board41MDao">
+	<bean id="board-mdao" class="web.mvc.Board41MDao">
+		<property name="sqlSessionTemplate" ref="sqlSessionTemplate"/>
+	</bean>
+	<bean id="board-sdao" class="web.mvc.Board41SDao">
 		<property name="sqlSessionTemplate" ref="sqlSessionTemplate"/>
 	</bean>
 </beans>
