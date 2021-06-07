@@ -17,4 +17,8 @@ public class Board41MDao {
 		boardList = sqlSessionTemplate.selectList("getBoardList",pmap);
 		return boardList;
 	}
+	public void boardMInsert(Map<String, Object> pmap) {
+		// TODO Auto-generated method stub
+		
+	}
 }

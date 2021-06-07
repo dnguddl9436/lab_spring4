@@ -22,5 +22,18 @@ public class Board41Logic {
 		boardList = boardMDao.getBoardList(pmap);
 		return boardList;
 	}
+	public int boardInsert(Map<String, Object> pmap) {
+		logger.info("boardInsert 호출 성공");
+		int result = 0;
+		int fileOk = 0;
+		boardMDao.boardMInsert(pmap);
+		//첨부파일이 있어?
+		
+		if(pmap.containsKey("bs_file")) {
+			fileOk = boardSDao.boardSInsert(pmap);
+		}
+		result = 1;
+		return result;
+	}
 
 }
