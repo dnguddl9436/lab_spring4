@@ -22,6 +22,7 @@ public class Board41Logic {
 		boardList = boardMDao.getBoardList(pmap);
 		return boardList;
 	}
+	//=>board/boardInsert.sp4?bm_no=100&bm_title=%EC%96%B5&bs_file=a.txt&bm_writer=%EC%9D%B4%EC%88%9C%EC%8B%A0&bm_email=test@hot.com&bm_content=%EC%97%B0%EC%8A%B5&bm_pw=123
 	public int boardInsert(Map<String, Object> pmap) {
 		logger.info("boardInsert 호출 성공");
 		int result = 0;
@@ -32,6 +33,7 @@ public class Board41Logic {
 		if(pmap.containsKey("bs_file")) {
 			fileOk = boardSDao.boardSInsert(pmap);
 		}
+		logger.info("fileOk : "+fileOk);
 		result = 1;
 		return result;
 	}
