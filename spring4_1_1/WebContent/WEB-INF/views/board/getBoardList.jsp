@@ -1,8 +1,16 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
+<%@ page import="java.util.*" %>
 <%
 	StringBuilder path = new StringBuilder(request.getContextPath());
 	path.append("/");
+	List<Map<String,Object>> boardList = null;
+	boardList = (List<Map<String,Object>>)request.getParameter("boardList");
+	int size = 0;
+	if(boardList!=null) {
+		size = boardList.length();
+		out.print(size);
+	}
 %>    
 <!DOCTYPE html>
 <html>
@@ -17,7 +25,7 @@
 <script type="text/javascript" src="<%=path.toString() %>js/jquery.easyui.min.js"></script>   
 </head>
 <body>
-	<table class="easyui-datagrid" data-options="url:'./jsonGetBoardList.sp4',title:'게시판',toolbar:'#tb_board'" style="width:500px;height:350px">
+	<table class="easyui-datagrid" data-options="title:'게시판',toolbar:'#tb_board'" style="width:500px;height:350px">
 	    <thead>
 	        <tr>
 	            <th data-options="field:'BM_NO'">글번호</th>

@@ -18,6 +18,23 @@
 	 <result property="bs_file" column="bs_file"/>
 	 <result property="bs_size" column="bs_size"/>
 	</resultMap>
+	<delete id="boardMDel" parameterType="map">
+		DELETE FROM board_master2019 WHERE bm_no=#{bm_no}
+	</delete>
+	<delete id="boardSDel" parameterType="map">
+		DELETE FROM board_sub2019 WHERE bm_no=#{bm_no}
+	</delete>
+	<select id="getBmNo" parameterType="int" resultType="int">
+		SELECT NVL((SELECT /*+index_desc(board_master2019 BOARD_MNO_PK)*/ bm_no
+		  			  FROM board_master2019
+		  			 WHERE rownum=1),0)+1 bm_no FROM dual
+	</select>
+	<select id="getBmGroup" parameterType="map" resultType="int">
+		SELECT NVL((SELECT /*+index_desc(board_master2019 I_GROUP)*/ bm_group
+		  			  FROM board_master2019
+		  			 WHERE rownum=1 AND bm_group > 0),0)+1 bm_group
+		  FROM dual
+	</select>
 	<insert id="boardMInsert" parameterType="map">
 		INSERT INTO board_master2019(bm_no, bm_title, bm_writer, bm_email
 		                           , bm_content, bm_date, bm_group, bm_pos, bm_step, bm_pw) 
@@ -28,11 +45,26 @@
 	<insert id="boardSInsert" parameterType="map">
 		INSERT INTO board_sub2019(bm_no,bs_seq,bs_file,bs_size) values(#{bm_no},#{bs_seq},#{bs_file},#{bs_size})
 	</insert>
+	<update id="hitCount" parameterType="int">
+		UPDATE board_master2019
+		   SET bm_hit = bm_hit + 1
+		 WHERE bm_no = #{value}
+	</update>
+	<update id="bmStepUpdate" parameterType="map">
+		UPDATE board_master2019
+		   SET bm_step = bm_step + 1
+		 WHERE bm_group = #{bm_group}
+		 <![CDATA[ and bm_step > #{bm_step ]]>
+	</update>
 	<select id="getBoardList" parameterType="map" resultType="map">
 		 SELECT bm.bm_no, bm.bm_title, bm.bm_date, bs.bs_file, bm.bm_hit
 		  FROM board_master2019 bm
 		      ,board_sub2019 bs
-		 WHERE bm.bm_no = bs.bm_no(+)	
+		 WHERE bm.bm_no = bs.bm_no(+)
+		 <if test='cb_search!=null and cb_search.equals("bm_title")'>
+		 	AND bm.bm_title LIKE '%'||#{tb_search}||'%'
+		 </if>
+		 ORDER BY bm_group desc, bm_step asc
 	</select>
 	<select id="getBoardMap" parameterType="map" resultMap="boardMMap">
 		 SELECT bm.bm_no, bm.bm_title, bm.bm_date, bs.bs_file, bm.bm_hit
