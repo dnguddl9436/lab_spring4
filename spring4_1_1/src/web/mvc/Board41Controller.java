@@ -45,15 +45,13 @@ public class Board41Controller extends MultiActionController {
 		Map<String,Object> target = new HashMap<>();
 		hmb.bind(target);
 		List<Map<String,Object>> boardList = null;
-		//boardList = boardLogic.getBoardList(target);//where bm_no=? and bm_title LIKE '%'||?||'%'
+		boardList = boardLogic.getBoardList(target);//where bm_no=? and bm_title LIKE '%'||?||'%'
 		logger.info("boardList:"+boardList);//
 		ModelAndView mav = new ModelAndView();
 		mav.setViewName("board/getBoardList");
-		//mav.addObject("boardList",boardList);
+		mav.addObject("boardList",boardList);
 //		RequestDispatcher view = req.getRequestDispatcher("jsonGetBoardList.jsp");
 //		view.forward(req, res);
-		logger.info("target:"+target);
-		logger.info("target tostring:"+target.toString());
 		return mav;
 	}
 	//json으로 내보내준다. - @RestController:String, @Controller:void, ModelAndView, String

@@ -57,7 +57,7 @@
 		 <![CDATA[ and bm_step > #{bm_step ]]>
 	</update>
 	<select id="getBoardList" parameterType="map" resultType="map">
-		 SELECT bm.bm_no, bm.bm_title, bm.bm_date, bs.bs_file, bm.bm_hit
+		 SELECT bm.bm_no, bm.bm_title, bm.bm_date, NVL(bs.bs_file,'해당없음') bs_file, bm.bm_hit
 		  FROM board_master2019 bm
 		      ,board_sub2019 bs
 		 WHERE bm.bm_no = bs.bm_no(+)
