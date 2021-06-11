@@ -57,12 +57,16 @@
 		 <![CDATA[ and bm_step > #{bm_step ]]>
 	</update>
 	<select id="getBoardList" parameterType="map" resultType="map">
-		 SELECT bm.bm_no, bm.bm_title, bm.bm_date, NVL(bs.bs_file,'해당없음') bs_file, bm.bm_hit
+		 SELECT bm.bm_no, bm.bm_title, bm.bm_date, NVL(bs.bs_file,'해당없음') bs_file, bm.bm_hit,
+		 		bm.bm_group, bm.bm_pos, bm.bm_step, bm.bm_email, bm.bm_pw, bm.bm_writer, bm.bm_content
 		  FROM board_master2019 bm
 		      ,board_sub2019 bs
 		 WHERE bm.bm_no = bs.bm_no(+)
 		 <if test='cb_search!=null and cb_search.equals("bm_title")'>
 		 	AND bm.bm_title LIKE '%'||#{tb_search}||'%'
+		 </if>
+		 <if test='bm_no > 0'>
+			AND bm.bm_no = #{bm_no}
 		 </if>
 		 ORDER BY bm_group desc, bm_step asc
 	</select>

@@ -17,6 +17,7 @@
 			<props>
 				<prop key="/board/boardInsert.sp4">board-controller</prop>
 				<prop key="/board/getBoardList.sp4">board-controller</prop>
+				<prop key="/board/getBoardDetail.sp4">board-controller</prop>
 				<prop key="/board/jsonGetBoardList.sp4">board-controller</prop>
 				<prop key="/di/getEmpList.sp4">emp-controller</prop>
 				<prop key="/di/empInsert.sp4">emp-controller</prop>
@@ -28,6 +29,7 @@
 	<bean id="board-resolver" class="org.springframework.web.servlet.mvc.multiaction.PropertiesMethodNameResolver">
 		<property name="mappings">
 			<props>
+				<prop key="/board/getBoardDetail.sp4">getBoardDetail</prop>
 				<prop key="/board/getBoardList.sp4">getBoardList</prop>
 				<prop key="/board/boardInsert.sp4">boardInsert</prop>
 				<prop key="/board/jsonGetBoardList.sp4">jsonGetBoardList</prop>

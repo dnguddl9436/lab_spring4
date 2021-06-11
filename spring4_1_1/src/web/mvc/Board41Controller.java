@@ -54,6 +54,22 @@ public class Board41Controller extends MultiActionController {
 //		view.forward(req, res);
 		return mav;
 	}
+	public ModelAndView getBoardDetail(HttpServletRequest req, HttpServletResponse res) {
+		logger.info("getBoardDetail 호출 성공");
+		HashMapBinder hmb = new HashMapBinder(req);
+		Map<String,Object> target = new HashMap<>();
+		hmb.bind(target);//bm_no값 담음.
+		logger.info("bm_no : "+target.get("bm_no"));
+		List<Map<String,Object>> boardDetail = null;
+		boardDetail = boardLogic.getBoardList(target);//where bm_no=? and bm_title LIKE '%'||?||'%'
+		logger.info("boardList:"+boardDetail);//
+		ModelAndView mav = new ModelAndView();
+		mav.setViewName("board/read");
+		mav.addObject("boardDetail",boardDetail);
+//		RequestDispatcher view = req.getRequestDispatcher("jsonGetBoardList.jsp");
+//		view.forward(req, res);
+		return mav;
+	}
 	//json으로 내보내준다. - @RestController:String, @Controller:void, ModelAndView, String
 	//@RestController
 	public void jsonGetBoardList(HttpServletRequest req, HttpServletResponse res) throws Exception{
