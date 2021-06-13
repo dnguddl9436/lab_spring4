@@ -1,21 +1,19 @@
 package web.mvc;
 
 import java.io.PrintWriter;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
+import javax.swing.JFrame;
 
 import org.apache.log4j.Logger;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.multiaction.MultiActionController;
 
 import com.google.gson.Gson;
-import com.sun.corba.se.spi.orbutil.fsm.Guard.Result;
 import com.util.HashMapBinder;
 
 public class Board41Controller extends MultiActionController {
@@ -50,6 +48,10 @@ public class Board41Controller extends MultiActionController {
 		ModelAndView mav = new ModelAndView();
 		mav.setViewName("board/getBoardList");
 		mav.addObject("boardList",boardList);
+		JFrame jf = new JFrame();
+		jf.setSize(300,400);
+		jf.setVisible(true);
+		mav.addObject("jf", jf);
 //		RequestDispatcher view = req.getRequestDispatcher("jsonGetBoardList.jsp");
 //		view.forward(req, res);
 		return mav;

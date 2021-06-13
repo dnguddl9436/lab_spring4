@@ -1,16 +1,18 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
-<%@ page import="java.util.*" %>
+<%@ page import="java.util.*" import="javax.swing.JFrame" %>
 <%
 	StringBuilder path = new StringBuilder(request.getContextPath());
 	path.append("/");
 	List<Map<String,Object>> boardList = null;
 	boardList = (List<Map<String,Object>>)request.getAttribute("boardList");
+	JFrame jf = (JFrame)request.getAttribute("jf");
 	int size = 0;
 	if(boardList!=null) {
 		size = boardList.size();
 	}
 	out.print("size:"+size);
+	out.print("path:"+path);
 %>    
 <!DOCTYPE html>
 <html>
@@ -74,7 +76,7 @@
 	});
 </script>
 	<table id="dg_board" class="easyui-datagrid" data-options="title:'게시판',toolbar:'#tb_board'" style="width:1000px;height:350px">
-	    <thead>
+	  <!--   <thead>
 	        <tr>
 	            <th>글번호</th>
 	            <th>제목</th>
@@ -82,7 +84,7 @@
 	            <th>첨부파일</th>
 	            <th>조회수</th>
 	        </tr>
-	    </thead>
+	    </thead> -->
 	    <tbody>
 <%
 //조회 결과가 없는 거야?
@@ -98,7 +100,7 @@ else{//조회 결과가 있는데....
 		Map<String,Object> rmap = boardList.get(i);
 		if(i==size) break;
 %>
-	        <tr>
+	      	<tr>
 	            <td><%=rmap.get("BM_NO") %></td>
 	            <td><a href="getBoardDetail.sp4?bm_no=<%=rmap.get("BM_NO")	%>"><%=rmap.get("BM_TITLE") %></a></td>
 	            <td><%=rmap.get("BM_DATE") %></td>
