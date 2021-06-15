@@ -7,7 +7,6 @@ import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.swing.JFrame;
 
 import org.apache.log4j.Logger;
 import org.springframework.web.servlet.ModelAndView;
@@ -48,19 +47,23 @@ public class Board41Controller extends MultiActionController {
 		ModelAndView mav = new ModelAndView();
 		mav.setViewName("board/getBoardList");
 		mav.addObject("boardList",boardList);
-		JFrame jf = new JFrame();
-		jf.setSize(300,400);
-		jf.setVisible(true);
-		mav.addObject("jf", jf);
 //		RequestDispatcher view = req.getRequestDispatcher("jsonGetBoardList.jsp");
 //		view.forward(req, res);
 		return mav;
 	}
+	/**********************************************************
+	 * 게시글 상세보기 구현
+	 * @param req
+	 * @param res
+	 * @return MModelAndView
+	 * 주의사항 - 전체조회와 하나로 합쳐지니까 target에 구분값을 추가할것.
+	 */
 	public ModelAndView getBoardDetail(HttpServletRequest req, HttpServletResponse res) {
 		logger.info("getBoardDetail 호출 성공");
 		HashMapBinder hmb = new HashMapBinder(req);
 		Map<String,Object> target = new HashMap<>();
 		hmb.bind(target);//bm_no값 담음.
+		target.put("gubun", "detail");
 		logger.info("bm_no : "+target.get("bm_no"));
 		List<Map<String,Object>> boardDetail = null;
 		boardDetail = boardLogic.getBoardList(target);//where bm_no=? and bm_title LIKE '%'||?||'%'
@@ -76,8 +79,11 @@ public class Board41Controller extends MultiActionController {
 	//@RestController
 	public void jsonGetBoardList(HttpServletRequest req, HttpServletResponse res) throws Exception{
 		logger.info("jsonGetBoardList 호출 성공");
+		HashMapBinder hmb = new HashMapBinder(req);
+		Map<String,Object> target = new HashMap<>();
+		hmb.bind(target);
 		List<Map<String,Object>> boardList = null;
-		boardList = boardLogic.getBoardList(null);
+		boardList = boardLogic.getBoardList(target);
 		Gson g = new Gson();
 		String imsi = g.toJson(boardList);
 		res.setContentType("application/json;charset=utf-8");
@@ -89,11 +95,11 @@ public class Board41Controller extends MultiActionController {
 		HashMapBinder hmb = new HashMapBinder(req);
 		Map<String,Object> pmap = new HashMap<>();
 		//사용자가 입력한 값이나 서버에서 클라이언트이게 요청한 값 넘김.
-		hmb.bind(pmap);
+		hmb.multiBind(pmap);
 		int result = 0;
 		result = boardLogic.boardInsert(pmap);
 		if(result == 1) {
-			//res.sendRedirect("./getBoardList.sp4");
+			res.sendRedirect("./getBoardList.sp4");
 		} else {
 			res.sendRedirect("등록실패 페이지 이동처리");
 		}

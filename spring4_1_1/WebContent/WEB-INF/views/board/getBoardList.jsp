@@ -1,12 +1,11 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
-<%@ page import="java.util.*" import="javax.swing.JFrame" %>
+<%@ page import="java.util.*"%>
 <%
 	StringBuilder path = new StringBuilder(request.getContextPath());
 	path.append("/");
 	List<Map<String,Object>> boardList = null;
 	boardList = (List<Map<String,Object>>)request.getAttribute("boardList");
-	JFrame jf = (JFrame)request.getAttribute("jf");
 	int size = 0;
 	if(boardList!=null) {
 		size = boardList.size();
@@ -34,14 +33,32 @@
 			}
 		});
 	}
-	function boardIns() {
-		
-	}
+    function boardIns() {
+    	$('#dlg_ins').dialog('open');
+    }
 	function boardUpd() {
 		
 	}
 	function boardDel() {
 		
+	}
+	function register() {
+		const title = document.querySelector("#iTitle").value;
+		const writer = document.querySelector("#iWriter").value;
+		const email = document.querySelector("#iEmail").value;
+		const content = document.querySelector("#iContent").value;
+		const pw = document.querySelector("#iPw").value;
+		location.href = 
+				"/board/boardInsert.sp4?&bm_title="+title
+						+"&bs_file=a.txt"
+						+"&bm_writer="+writer
+						+"&bm_email="+email
+						+"&bm_content="+content
+						+"&bm_pw="+pw;
+	}
+	function insAction() {
+		console.log("입력액션 호출");
+		$("#board_ins").submit();
 	}
 </script>
 </head>
@@ -55,7 +72,13 @@
 				{field:'BM_DATE',title:'작성일',width:150,align:'center'},
 				{field:'BS_FILE',title:'첨부파일',width:230,align:'center'},
 				{field:'BM_HIT',title:'조회수',width:100,align:'center'},
-			]]
+			]],
+			toolbar: '#tb_board2',
+			onDblClickCell: function(index, field, value){
+				if("BS_FILE" == field) {
+					location.href="download.jsp?bs_file="+value;
+				}
+			}
 		});
 		$('#btn_sel').bind('click', function(){
 			//alert('조회');
@@ -75,7 +98,7 @@
 		});
 	});
 </script>
-	<table id="dg_board" class="easyui-datagrid" data-options="title:'게시판',toolbar:'#tb_board'" style="width:1000px;height:350px">
+	<table id="dg_board" class="easyui-datagrid" data-options="title:'게시판',toolbar:'#tb_board',width:1000,height:350" style="width:1000px;height:350px">
 	  <!--   <thead>
 	        <tr>
 	            <th>글번호</th>
@@ -119,5 +142,33 @@ else{//조회 결과가 있는데....
         <a id="btn_upd" href="#" class="easyui-linkbutton" iconCls="icon-edit" plain="true">수정</a>
         <a id="btn_del" href="#" class="easyui-linkbutton" iconCls="icon-cancel" plain="true">삭제</a>
     </div>   
+    <!-- 글쓰기 화면 시작 -->
+    <div id="dlg_ins" class="easyui-dialog" title="글쓰기" data-options="iconCls:'icon-save',closed:'true'" style="width:600px;height:650px;padding:10px">
+        <form id="board_ins" method="post" enctype="multipart/form-data" action="boardInsert.sp4">
+	        <div style="margin-bottom:20px">
+	            <input id="iTitle" class="easyui-textbox" name="bm_title" label="제목:" labelPosition="top" data-options="prompt:'제목'" style="width:100%;">
+	        </div>
+	        <div style="margin-bottom:20px">
+	            <input id="iWriter" class="easyui-textbox" name="bm_writer" label="작성자:" labelPosition="top" style="width:100%;">
+	        </div>
+	        <div style="margin-bottom:20px">
+	            <input id="iEmail" class="easyui-textbox" name="bm_content" label="이메일:" labelPosition="top" data-options="prompt:'Enter a email address...',validType:'email'" style="width:100%;">
+	        </div>
+	        <div style="margin-bottom:20px">
+	            <input id="iContent" class="easyui-textbox" name="bm_email" label="내용:" labelPosition="top" data-options="prompt:'내용', multiline:true, width:500, height:120"style="width:100%;">
+	        </div>
+	        <div style="margin-bottom:20px">
+	            <input id="iPw" class="easyui-passwordbox" name="bm_pw" label="비밀번호:" labelPosition="top" style="width:100%;">
+	        </div>
+	        <div style="margin-bottom:20px">
+	            <input id="iFile" class="easyui-filebox" name="bs_file" label="첨부파일:" labelPosition="top" style="width:100%;">
+	        </div>
+			<div id="ft_ins">
+				<a href="javascript:insAction()" class="easyui-linkbutton" data-options="iconCls:'icon-save',plain:true">저장</a>
+				<a href="#" class="easyui-linkbutton" data-options="iconCls:'icon-cancel',plain:true">취소</a>
+			</div>
+		</form>
+    </div>
+    <!-- 글쓰기 화면 끝 -->
 </body>
 </html>

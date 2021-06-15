@@ -39,7 +39,7 @@
 		INSERT INTO board_master2019(bm_no, bm_title, bm_writer, bm_email
 		                           , bm_content, bm_date, bm_group, bm_pos, bm_step, bm_pw) 
 		                      values(#{bm_no},#{bm_title},#{bm_writer},#{bm_email}
-		                           , #{bm_content}, to_char(sysdate, 'YYYY-MM-DD'), 0,0,0,#{bm_pw}
+		                           , #{bm_content}, to_char(sysdate, 'YYYY-MM-DD'), #{bm_group}, #{bm_pos} ,#{bm_step} ,#{bm_pw}
 		                            )
 	</insert>
 	<insert id="boardSInsert" parameterType="map">
@@ -68,7 +68,7 @@
 		 <if test='bm_no > 0'>
 			AND bm.bm_no = #{bm_no}
 		 </if>
-		 ORDER BY bm_group desc, bm_step asc
+		 ORDER BY bm_no desc, bm_group desc, bm_step asc
 	</select>
 	<select id="getBoardMap" parameterType="map" resultMap="boardMMap">
 		 SELECT bm.bm_no, bm.bm_title, bm.bm_date, bs.bs_file, bm.bm_hit

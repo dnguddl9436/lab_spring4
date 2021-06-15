@@ -46,5 +46,6 @@
 	<classpathentry kind="lib" path="WebContent/WEB-INF/lib/netty-all-4.1.63.Final.jar"/>
 	<classpathentry kind="lib" path="WebContent/WEB-INF/lib/guava-29.0-android.jar"/>
 	<classpathentry kind="lib" path="WebContent/WEB-INF/lib/failureaccess-1.0.1.jar"/>
+	<classpathentry kind="lib" path="WebContent/WEB-INF/lib/cos.jar"/>
 	<classpathentry kind="output" path="build/classes"/>
 </classpath>

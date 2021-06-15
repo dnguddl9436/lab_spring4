@@ -47,6 +47,27 @@
 	function repleForm(){
 		$("#dlg_boardAdd").dialog('open');
 	}
+	function boardList(){
+		location.href="./getBoardList.sp4";
+	}
+	function addAction(){
+		const title = document.querySelector("#bm_title").value;
+		const writer = document.querySelector("#bm_writer").value;
+		const email = document.querySelector("#bm_email").value;
+		const content = document.querySelector("#bm_content").value;
+		const pw = document.querySelector("#bm_pw").value;
+		location.href = 
+			"/board/boardInsert.sp4?&bm_title="+title
+					+"&bm_no="+no
+					//+"&bs_file=a.txt"
+					+"&bm_writer="+writer
+					+"&bm_email="+email
+					+"&bm_content="+content
+					+"&bm_pw="+pw
+					+"&bm_group="+group
+					+"&bm_pos="+pos
+					+"&bm_step="+step;
+	}
 </script>
 </head>
 <body>

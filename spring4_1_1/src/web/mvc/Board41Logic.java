@@ -19,6 +19,15 @@ public class Board41Logic {
 	public List<Map<String,Object>> getBoardList(Map<String, Object> pmap) {
 		logger.info("getBoardList 호출 성공");
 		List<Map<String,Object>> boardList = null;
+		String gubun = null;
+		if(pmap!=null && pmap.get("gubun")!=null) {
+				gubun = pmap.get("gubun").toString();
+		}
+		if(gubun!=null && "detail".equals(gubun)) {
+			int bm_no = 0;
+			bm_no = Integer.parseInt(pmap.get("bm_no").toString());
+			boardMDao.hitCount(bm_no);
+		}
 		boardList = boardMDao.getBoardList(pmap);
 		return boardList;
 	}
@@ -28,6 +37,11 @@ public class Board41Logic {
 		int result = 0;
 		int bm_no = 0;
 		int bm_group = 0;
+		if(pmap.get("bm_no")==null) {
+			logger.info("bm_no는 null");
+			bm_no = boardMDao.getBmNo();
+			pmap.put("bm_no", bm_no);
+		}
 		if(pmap.get("bm_group")!=null) {//read.jsp눌렀다
 			bm_group = Integer.parseInt(pmap.get("bm_group").toString());
 		}
@@ -45,8 +59,9 @@ public class Board41Logic {
 			pmap.put("bm_step", 0);
 		}
 		//첨부파일이 있어?
-		if((pmap.get("bm_pos")!=null)&&(pmap.get("bm_pos").toString().length() > 0)) {
-			pmap.put("bm_no", bm_no);
+		if((pmap.get("bs_file")!=null)&&(pmap.get("bs_file").toString().length() > 0)) {
+			//pmap.put("bm_no", bm_no);
+			logger.info("첨부파일 처리 로직 경유");
 			pmap.put("bm_seq", 1);
 			boardSDao.boardSInsert(pmap);
 		}
