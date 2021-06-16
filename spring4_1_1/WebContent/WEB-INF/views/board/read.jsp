@@ -31,6 +31,7 @@
 		bm_step = boardDetail.get(0).get("BM_STEP").toString();
 	}   
 	out.print("size:"+size);
+	out.print("boardDetail:"+boardDetail);
 %>    
 <!DOCTYPE html>
 <html>
@@ -50,23 +51,9 @@
 	function boardList(){
 		location.href="./getBoardList.sp4";
 	}
-	function addAction(){
-		const title = document.querySelector("#bm_title").value;
-		const writer = document.querySelector("#bm_writer").value;
-		const email = document.querySelector("#bm_email").value;
-		const content = document.querySelector("#bm_content").value;
-		const pw = document.querySelector("#bm_pw").value;
-		location.href = 
-			"/board/boardInsert.sp4?&bm_title="+title
-					+"&bm_no="+no
-					//+"&bs_file=a.txt"
-					+"&bm_writer="+writer
-					+"&bm_email="+email
-					+"&bm_content="+content
-					+"&bm_pw="+pw
-					+"&bm_group="+group
-					+"&bm_pos="+pos
-					+"&bm_step="+step;
+	function insAction() {
+		console.log("입력액션 호출");
+		$("#f_boardAdd").submit();
 	}
 </script>
 </head>
@@ -106,49 +93,48 @@
 	form전송시 encType옵션이 추가되면 request객체로 사용자가 입력한 값을 꺼낼 수 없다.
 	MultipartRequest  => cos.jar
 	 -->	
-		<form id="f_boardAdd" method="get">
-		<input type="hidden" name="bm_no" value="<%=bm_no%>">
-		<input type="hidden" name="bm_group" value="<%=bm_group%>">
-		<input type="hidden" name="bm_pos" value="<%=bm_pos%>">
-		<input type="hidden" name="bm_step" value="<%=bm_step%>">
-		<!-- <form id="f_boardAdd"> -->
-		<table>
-			<tr>
-				<td width="100px">제목</td>
-				<td width="500px">
-					<input class="easyui-textbox" data-options="width:'350px'" id="bm_title" name="bm_title" required>
-				</td>
-			</tr>
-			<tr>	
-				<td width="100px">작성자</td>
-				<td width="500px">
-					<input class="easyui-textbox" data-options="width:'150px'" id="bm_writer" name="bm_writer" required>
-				</td>
-			</tr>
-			<tr>
-				<td width="100px">이메일</td>
-				<td width="500px">
-					<input class="easyui-textbox" data-options="width:'250px'" id="bm_email" name="bm_email">
-				</td>
-			</tr>
-			<tr>			
-				<td width="100px">내용</td>
-				<td width="500px">
-					<input class="easyui-textbox" id="bm_content" name="bm_content" data-options="multiline:'true',width:'400px',height:'90px'" required>
-				</td>
-			</tr>
-			<tr>			
-				<td width="100px">비번</td>
-				<td width="500px">
-					<input class="easyui-textbox" data-options="width:'100px'" id="bm_pw" name="bm_pw" required>
-				</td>
-			</tr>
-		</table>
+		<form id="f_boardAdd" method="post" action="boardInsert.sp4" enctype="multipart/form-data">
+			<input type="hidden" name="bm_group" value="<%=bm_group%>">
+			<input type="hidden" name="bm_pos" value="<%=bm_pos%>">
+			<input type="hidden" name="bm_step" value="<%=bm_step%>">
+			<!-- <form id="f_boardAdd"> -->
+			<table>
+				<tr>
+					<td width="100px">제목</td>
+					<td width="500px">
+						<input class="easyui-textbox" data-options="width:'350px'" id="bm_title" name="bm_title" required>
+					</td>
+				</tr>
+				<tr>	
+					<td width="100px">작성자</td>
+					<td width="500px">
+						<input class="easyui-textbox" data-options="width:'150px'" id="bm_writer" name="bm_writer" required>
+					</td>
+				</tr>
+				<tr>
+					<td width="100px">이메일</td>
+					<td width="500px">
+	            		<input class="easyui-textbox" id="bm_email" name="bm_email" data-options="prompt:'Enter a email address...',validType:'email'" style="width:100%;">
+					</td>
+				</tr>
+				<tr>			
+					<td width="100px">내용</td>
+					<td width="500px">
+						<input class="easyui-textbox" id="bm_content" name="bm_content" data-options="multiline:'true',width:'400px',height:'90px'" required>
+					</td>
+				</tr>
+				<tr>			
+					<td width="100px">비번</td>
+					<td width="500px">
+						<input class="easyui-passwordbox" data-options="width:'100px'" id="bm_pw" name="bm_pw" required>
+					</td>
+				</tr>
+			</table>
 		</form>
 	</div>
 	<!-- 입력 화면 버튼 추가 -->
 	<div id="tbar_boardAdd" align="right">
-		<a href="javascript:addAction()" class="easyui-linkbutton" iconCls="icon-save">저장</a>
+		<a href="javascript:insAction()" class="easyui-linkbutton" iconCls="icon-save">저장</a>
 		<a href="javascript:$('#dlg_boardAdd').dialog('close')" 
 		   class="easyui-linkbutton" iconCls="icon-cancel">닫기</a>
 	</div>

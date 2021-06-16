@@ -124,10 +124,22 @@ else{//조회 결과가 있는데....
 		if(i==size) break;
 %>
 	      	<tr>
-	            <td><%=rmap.get("BM_NO") %></td>
-	            <td><a href="getBoardDetail.sp4?bm_no=<%=rmap.get("BM_NO")	%>"><%=rmap.get("BM_TITLE") %></a></td>
+	            <td><%=rmap.get("BM_NO") %></td><td>
+<%
+	String imgPath = "\\board\\";
+	if(Integer.parseInt(rmap.get("BM_POS").toString())>0){
+		for(int j=0;j<Integer.parseInt(rmap.get("BM_POS").toString());j++){
+			out.print("&nbsp;&nbsp;");
+		}
+%>
+	<!-- 여기는 html 땅이다. -->
+	<img src="<%=imgPath%>reply.gif" border="0">
+<%
+	}////////////end of if
+%>
+	            <a href="getBoardDetail.sp4?bm_no=<%=rmap.get("BM_NO")	%>" style="text-decoration:none;"><%=rmap.get("BM_TITLE") %></a></td>
 	            <td><%=rmap.get("BM_DATE") %></td>
-	            <td><%=rmap.get("BS_FILE") %></td>
+	            <td><a href="download.jsp?bs_file=<%=rmap.get("BS_FILE")%>" style="text-decoration:none;"><%=rmap.get("BS_FILE") %></a></td>
 	            <td><%=rmap.get("BM_HIT") %></td>
 	        </tr>
 <%
@@ -152,10 +164,10 @@ else{//조회 결과가 있는데....
 	            <input id="iWriter" class="easyui-textbox" name="bm_writer" label="작성자:" labelPosition="top" style="width:100%;">
 	        </div>
 	        <div style="margin-bottom:20px">
-	            <input id="iEmail" class="easyui-textbox" name="bm_content" label="이메일:" labelPosition="top" data-options="prompt:'Enter a email address...',validType:'email'" style="width:100%;">
+	            <input id="iEmail" class="easyui-textbox" name="bm_email" label="이메일:" labelPosition="top" data-options="prompt:'Enter a email address...',validType:'email'" style="width:100%;">
 	        </div>
 	        <div style="margin-bottom:20px">
-	            <input id="iContent" class="easyui-textbox" name="bm_email" label="내용:" labelPosition="top" data-options="prompt:'내용', multiline:true, width:500, height:120"style="width:100%;">
+	            <input id="iContent" class="easyui-textbox" name="bm_content" label="내용:" labelPosition="top" data-options="prompt:'내용', multiline:true, width:500, height:120"style="width:100%;">
 	        </div>
 	        <div style="margin-bottom:20px">
 	            <input id="iPw" class="easyui-passwordbox" name="bm_pw" label="비밀번호:" labelPosition="top" style="width:100%;">

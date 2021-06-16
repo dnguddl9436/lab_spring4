@@ -54,7 +54,7 @@
 		UPDATE board_master2019
 		   SET bm_step = bm_step + 1
 		 WHERE bm_group = #{bm_group}
-		 <![CDATA[ and bm_step > #{bm_step ]]>
+		 <![CDATA[ and bm_step > #{bm_step} ]]>
 	</update>
 	<select id="getBoardList" parameterType="map" resultType="map">
 		 SELECT bm.bm_no, bm.bm_title, bm.bm_date, NVL(bs.bs_file,'해당없음') bs_file, bm.bm_hit,
@@ -68,7 +68,7 @@
 		 <if test='bm_no > 0'>
 			AND bm.bm_no = #{bm_no}
 		 </if>
-		 ORDER BY bm_no desc, bm_group desc, bm_step asc
+		 ORDER BY bm_group desc, bm_step asc
 	</select>
 	<select id="getBoardMap" parameterType="map" resultMap="boardMMap">
 		 SELECT bm.bm_no, bm.bm_title, bm.bm_date, bs.bs_file, bm.bm_hit

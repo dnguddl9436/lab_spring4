@@ -48,8 +48,8 @@ public class Board41Logic {
 		//댓글이야?
 		if(bm_group > 0) {
 			boardMDao.bmStepUpdate(pmap);//조건에 맞지 않으면 처리가 생략될 수 있다.
-			pmap.put("bm_pos", Integer.parseInt(pmap.get("bm_pos").toString()));
-			pmap.put("bm_step", Integer.parseInt(pmap.get("bm_step").toString()));
+			pmap.put("bm_pos", Integer.parseInt(pmap.get("bm_pos").toString())+1);
+			pmap.put("bm_step", Integer.parseInt(pmap.get("bm_step").toString())+1);
 		}
 		//너 새글이구나
 		else {
