@@ -1,15 +1,12 @@
 package com.firebase.realtimeDB;
 
 import java.io.FileInputStream;
-
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Scanner;
 
 import com.google.auth.oauth2.GoogleCredentials;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.FirebaseOptions;
-import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -20,26 +17,7 @@ import com.google.firebase.database.ValueEventListener;
 
 public class FirebaseController {
 
-	public static void main(String[] args) {
-//		System.out.println(System.getProperty("user.dir"));
-		initialize();
-		Scanner sc = new Scanner(System.in);
-//		transactionData();
-		//readData();
-		sc.next();
-		insertErrand("user1",37.1234567,126.4567891);
-		insertErrand("user2",37.0234567,126.4567890);
-		insertErrand("user3",37.1034567,126.4567801);
-		insertErrand("user4",37.1204567,126.4567091);
-		insertErrand("user5",37.1230567,126.4560891);
-		insertErrand("user6",37.1234067,126.4507891);
-		insertErrand("user7",37.1234507,126.4067891);
-		insertErrand("user8",37.1234560,126.0567891);
-		readErrand(37.1234567, 126.4567891);
-		sc.next();
-	}
-
-	public static void readErrand(double loc_x, double loc_y) {
+	public void readErrand(double loc_x, double loc_y) {
 		final FirebaseDatabase database = FirebaseDatabase.getInstance();
 		DatabaseReference ref = database.getReference("errand");
 		System.out.println("readErrand시작");
@@ -65,10 +43,10 @@ public class FirebaseController {
 		});
 	}
 
-	public static void initialize() {
+	public void initialize() {
 		try {
 			// Fetch the service account key JSON file contents
-			FileInputStream serviceAccount = new FileInputStream("src\\com\\firebase\\realtimeDB\\serviceAccountKey.json");
+			FileInputStream serviceAccount = new FileInputStream("D:\\portfolio_kosmo\\lab_spring4\\spring4_1_1\\src\\com\\firebase\\realtimeDB\\serviceAccountKey.json");
 	
 			// Initialize the app with a service account, granting admin privileges
 			FirebaseOptions options = new FirebaseOptions.Builder()

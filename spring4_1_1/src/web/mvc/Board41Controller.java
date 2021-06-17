@@ -12,6 +12,8 @@ import org.apache.log4j.Logger;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.multiaction.MultiActionController;
 
+import com.firebase.realtimeDB.FirebaseChat;
+import com.firebase.realtimeDB.FirebaseController;
 import com.google.gson.Gson;
 import com.util.HashMapBinder;
 
@@ -75,6 +77,17 @@ public class Board41Controller extends MultiActionController {
 //		view.forward(req, res);
 		return mav;
 	}
+	public ModelAndView updateForm(HttpServletRequest req, HttpServletResponse res) {
+		logger.info("updateForm 호출 성공");
+		HashMapBinder hmb = new HashMapBinder(req);
+		Map<String,Object> target = new HashMap<>();
+		hmb.bindPost(target);//bm_no값 담음.
+		logger.info("bm_no : "+target.get("bm_no"));
+		ModelAndView mav = new ModelAndView();
+		mav.setViewName("board/updateForm");
+		mav.addObject("target",target);
+		return mav;
+	}
 	//json으로 내보내준다. - @RestController:String, @Controller:void, ModelAndView, String
 	//@RestController
 	public void jsonGetBoardList(HttpServletRequest req, HttpServletResponse res) throws Exception{
@@ -104,5 +117,19 @@ public class Board41Controller extends MultiActionController {
 			res.sendRedirect("등록실패 페이지 이동처리");
 		}
 	}
-	
+	public ModelAndView getChatList(HttpServletRequest req, HttpServletResponse res) {
+		logger.info("getChatList 호출 성공");
+		HashMapBinder hmb = new HashMapBinder(req);
+		Map<String,Object> target = new HashMap<>();
+		hmb.bind(target);
+		List<Map<String,Object>> chatList = null;
+		chatList = boardLogic.getChatList(target);//where bm_no=? and bm_title LIKE '%'||?||'%'
+		logger.info("chatList:"+chatList);//
+		ModelAndView mav = new ModelAndView();
+		mav.setViewName("board/chatList");
+		mav.addObject("chatList",chatList);
+//		RequestDispatcher view = req.getRequestDispatcher("jsonGetBoardList.jsp");
+//		view.forward(req, res);
+		return mav;
+	}
 }

@@ -60,6 +60,10 @@
 		console.log("입력액션 호출");
 		$("#board_ins").submit();
 	}
+	function chatList(){
+		let nickname = document.querySelector("#nickname").value;
+		location.href="./getChatList.sp4?nickname="+nickname;
+	}
 </script>
 </head>
 <body>
@@ -181,6 +185,8 @@ else{//조회 결과가 있는데....
 			</div>
 		</form>
     </div>
+    <input id="nickname" class="easyui-textbox" data-options="prompt:'닉네임'">
+	<a href="javascript:chatList()" class="easyui-linkbutton" iconCls="icon-help" plain="true">내 채팅방 목록</a>
     <!-- 글쓰기 화면 끝 -->
 </body>
 </html>

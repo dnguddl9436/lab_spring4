@@ -16,9 +16,13 @@
 		<property name="mappings">
 			<props>
 				<prop key="/board/boardInsert.sp4">board-controller</prop>
+				<prop key="/board/boardUpdate.sp4">board-controller</prop>
+				<prop key="/board/updateForm.sp4">board-controller</prop>
+				<prop key="/board/boardDelete.sp4">board-controller</prop>
 				<prop key="/board/getBoardList.sp4">board-controller</prop>
 				<prop key="/board/getBoardDetail.sp4">board-controller</prop>
 				<prop key="/board/jsonGetBoardList.sp4">board-controller</prop>
+				<prop key="/board/getChatList.sp4">board-controller</prop>
 				<prop key="/di/getEmpList.sp4">emp-controller</prop>
 				<prop key="/di/empInsert.sp4">emp-controller</prop>
 				<prop key="/di/empUpdate.sp4">emp-controller</prop>
@@ -32,7 +36,11 @@
 				<prop key="/board/getBoardDetail.sp4">getBoardDetail</prop>
 				<prop key="/board/getBoardList.sp4">getBoardList</prop>
 				<prop key="/board/boardInsert.sp4">boardInsert</prop>
+				<prop key="/board/boardUpdate.sp4">boardUpdate</prop>
+				<prop key="/board/updateForm.sp4">updateForm</prop>
+				<prop key="/board/boardDelete.sp4">boardDelete</prop>
 				<prop key="/board/jsonGetBoardList.sp4">jsonGetBoardList</prop>
+				<prop key="/board/getChatList.sp4">getChatList</prop>
 			</props>
 		</property>
 	</bean>

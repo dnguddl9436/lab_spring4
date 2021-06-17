@@ -8,7 +8,7 @@
 	boardDetail = (List<Map<String,Object>>)request.getAttribute("boardDetail");
 	int size = 0;
 	String bm_email 	= null;
-	String bm_file 		= null;
+	String bs_file 		= null;
 	String bm_title 	= null;
 	String bm_writer 	= null;
 	String bm_content 	= null;
@@ -20,7 +20,7 @@
 	if(boardDetail!=null) {
 		size = boardDetail.size();
 		bm_email = boardDetail.get(0).get("BM_EMAIL").toString();
-		bm_file = boardDetail.get(0).get("BS_FILE").toString();
+		bs_file = boardDetail.get(0).get("BS_FILE").toString();
 		bm_title = boardDetail.get(0).get("BM_TITLE").toString();
 		bm_writer = boardDetail.get(0).get("BM_WRITER").toString();
 		bm_content = boardDetail.get(0).get("BM_CONTENT").toString();
@@ -48,12 +48,32 @@
 	function repleForm(){
 		$("#dlg_boardAdd").dialog('open');
 	}
-	function boardList(){
-		location.href="./getBoardList.sp4";
-	}
 	function insAction() {
 		console.log("입력액션 호출");
 		$("#f_boardAdd").submit();
+	}
+	function updateForm(){
+		//$("#dlg_upd").dialog('open');
+		$("#dlg_upd").dialog({
+			title: 'My Dialog',
+			width: 1000,
+			height: 400,
+			closed: false,
+			cache: false,
+			href: 'updateForm.sp4?bm_writer=<%=bm_writer%>&bm_content=<%=bm_content%>&bm_no=<%=bm_no%>&bs_file=<%=bs_file%>',
+			modal: true
+		});
+	}
+	function updAction() {
+		console.log("입력액션 호출");
+		$("#f_boardUpd").submit();
+	}
+	function boardList(){
+		location.href="./getBoardList.sp4";
+	}
+	function chatList(){
+		let nickname = document.querySelector("#nickname").value;
+		location.href="./getChatList.sp4?nickname="+nickname;
 	}
 </script>
 </head>
@@ -77,6 +97,10 @@
 	    	<td><input id="bm_content" value="<%=bm_content%>" name="bm_content" data-options="multiline:'true', width:'570px', height:'90px'" class="easyui-textbox"></td>
 	    	</tr>
 	    	<tr>
+	    	<td>닉네임</td>
+	    	<td><input id="nickname" value="" data-options="multiline:'true', width:'570px', height:'90px'" class="easyui-textbox"></td>
+	    	</tr>
+	    	<tr>
 	    	<td>비밀번호</td>
 	    	<td><input id="bm_pw" value="<%=bm_pw%>" name="bm_pw" class="easyui-passwordbox"></td>
 	    	</tr>	    	
@@ -86,6 +110,7 @@
 	    <a href="javascript:updateForm()" class="easyui-linkbutton" iconCls="icon-add" plain="true">수정</a>
 	    <a href="javascript:boardDelView()" class="easyui-linkbutton" iconCls="icon-remove" plain="true">삭제</a>
 	    <a href="javascript:boardList()" class="easyui-linkbutton" iconCls="icon-search" plain="true">목록</a>
+		<a href="javascript:chatList()" class="easyui-linkbutton" iconCls="icon-help" plain="true">내 채팅방 목록</a>
 	</div>
 	<!--================== [[댓글쓰기 화면]] ==================-->
 	<div id="dlg_boardAdd" title="댓글쓰기" class="easyui-dialog" style="width:600px;height:400px;padding:10px" data-options="closed:'true',modal:'true',footer:'#tbar_boardAdd'">	
@@ -139,5 +164,50 @@
 		   class="easyui-linkbutton" iconCls="icon-cancel">닫기</a>
 	</div>
 			<!-- 댓글쓰기  끝  -->	    
+
+	<!--================== [[글수정 화면]] ==================-->
+	<div id="dlg_upd" title="글수정" class="easyui-dialog" style="width:600px;height:400px;padding:10px" data-options="closed:'true',modal:'true',footer:'#tbar_boardUpd'">	
+		<form id="f_boardUpd" method="post" action="boardUpdate.sp4">
+			<input type="hidden" name="bm_no" value="<%=bm_no%>">
+			<table>
+				<tr>
+					<td width="100px">제목</td>
+					<td width="500px">
+						<input class="easyui-textbox" data-options="width:'350px'" id="bm_title" name="bm_title" required>
+					</td>
+				</tr>
+				<tr>	
+					<td width="100px">작성자</td>
+					<td width="500px">
+						<input class="easyui-textbox" data-options="width:'150px'" id="bm_writer" name="bm_writer" required>
+					</td>
+				</tr>
+				<tr>
+					<td width="100px">이메일</td>
+					<td width="500px">
+	            		<input class="easyui-textbox" id="bm_email" name="bm_email" data-options="prompt:'Enter a email address...',validType:'email'" style="width:100%;">
+					</td>
+				</tr>
+				<tr>			
+					<td width="100px">내용</td>
+					<td width="500px">
+						<input class="easyui-textbox" id="bm_content" name="bm_content" data-options="multiline:'true',width:'400px',height:'90px'" required>
+					</td>
+				</tr>
+				<tr>			
+					<td width="100px">비번</td>
+					<td width="500px">
+						<input class="easyui-passwordbox" data-options="width:'100px'" id="bm_pw" name="bm_pw" required>
+					</td>
+				</tr>
+			</table>
+		</form>
+	</div>
+	<!-- 입력 화면 버튼 추가 -->
+	<div id="tbar_boardUpd" align="right">
+		<a href="javascript:updAction()" class="easyui-linkbutton" iconCls="icon-save">수정</a>
+		<a href="javascript:$('#dlg_upd').dialog('close')" class="easyui-linkbutton" iconCls="icon-cancel">닫기</a>
+	</div>
+			<!-- 글수정  끝  -->	    
 </body>
 </html>

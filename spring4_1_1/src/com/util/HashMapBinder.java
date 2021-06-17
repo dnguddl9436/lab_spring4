@@ -47,7 +47,6 @@ public class HashMapBinder {
 		logger.info(files);
 		logger.info(files.toString());
 		if(files != null) {
-			logger.info("첫번째if");
 			File file = null;//파일명을 객체로 만들어줄 뿐 안에 내용까지 생성되는 것은 아님.
 			while(files.hasMoreElements()) {
 				String fname = files.nextElement();
@@ -60,7 +59,6 @@ public class HashMapBinder {
 			//첨부파일의 크기를 담을 변수
 			double size = 0;
 			if(file != null) {
-				logger.info("두번째 if"+file);
 				size = file.length();
 				size = file.length();
 				target.put("bs_size", size);

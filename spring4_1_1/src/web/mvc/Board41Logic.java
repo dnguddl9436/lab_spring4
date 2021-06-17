@@ -5,6 +5,8 @@ import java.util.Map;
 
 import org.apache.log4j.Logger;
 
+import com.firebase.realtimeDB.FirebaseChat;
+
 public class Board41Logic {
 	Logger logger = Logger.getLogger(Board41Logic.class);
 	private Board41MDao boardMDao = new Board41MDao();
@@ -69,6 +71,13 @@ public class Board41Logic {
 		
 		result = 1;
 		return result;
+	}
+
+	public List<Map<String, Object>> getChatList(Map<String, Object> target) {
+		List<Map<String,Object>> chatList = null;
+		String nickname = target.get("nickname").toString();
+		chatList = boardMDao.getChatList(nickname);
+		return chatList;
 	}
 
 }
