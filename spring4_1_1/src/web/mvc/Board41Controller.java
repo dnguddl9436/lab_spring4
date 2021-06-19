@@ -117,6 +117,33 @@ public class Board41Controller extends MultiActionController {
 			res.sendRedirect("등록실패 페이지 이동처리");
 		}
 	}
+	public void boardUpdate(HttpServletRequest req, HttpServletResponse res) throws Exception {
+		logger.info("boardUpdate 호출 성공");
+		HashMapBinder hmb = new HashMapBinder(req);
+		Map<String,Object> pmap = new HashMap<>();
+		//사용자가 입력한 값이나 서버에서 클라이언트이게 요청한 값 넘김.
+		hmb.bindPost(pmap);
+		int result = 0;
+		result = boardLogic.boardUpdate(pmap);
+		if(result == 1) {
+			res.sendRedirect("./getBoardList.sp4");
+		} else {
+			//res.sendRedirect("등록실패 페이지 이동처리");
+		}
+	}
+	public void boardDelete(HttpServletRequest req, HttpServletResponse res) throws Exception {
+		logger.info("boardDelete 호출 성공");
+		HashMapBinder hmb = new HashMapBinder(req);
+		Map<String,Object> pmap = new HashMap<>();
+		hmb.bindPost(pmap);
+		int result = 0;
+		result = boardLogic.boardDelete(pmap);
+		if(result == 1) {
+			res.sendRedirect("./getBoardList.sp4");
+		} else {
+			//res.sendRedirect("등록실패 페이지 이동처리");
+		}
+	}
 	public ModelAndView getChatList(HttpServletRequest req, HttpServletResponse res) {
 		logger.info("getChatList 호출 성공");
 		HashMapBinder hmb = new HashMapBinder(req);
@@ -128,8 +155,19 @@ public class Board41Controller extends MultiActionController {
 		ModelAndView mav = new ModelAndView();
 		mav.setViewName("board/chatList");
 		mav.addObject("chatList",chatList);
-//		RequestDispatcher view = req.getRequestDispatcher("jsonGetBoardList.jsp");
-//		view.forward(req, res);
+		return mav;
+	}
+	public ModelAndView enterChatroom(HttpServletRequest req, HttpServletResponse res) {
+		logger.info("getChatList 호출 성공");
+		HashMapBinder hmb = new HashMapBinder(req);
+		Map<String,Object> target = new HashMap<>();
+		hmb.bind(target);
+		List<Map<String,Object>> enterChatroom = null;
+		enterChatroom = boardLogic.enterChatroom(target);//where bm_no=? and bm_title LIKE '%'||?||'%'
+		logger.info("enterChatroom:"+enterChatroom);//
+		ModelAndView mav = new ModelAndView();
+		mav.setViewName("board/enterChatroom");
+		mav.addObject("enterChatroom",enterChatroom);
 		return mav;
 	}
 }

@@ -23,6 +23,7 @@
 				<prop key="/board/getBoardDetail.sp4">board-controller</prop>
 				<prop key="/board/jsonGetBoardList.sp4">board-controller</prop>
 				<prop key="/board/getChatList.sp4">board-controller</prop>
+				<prop key="/board/enterChatroom.sp4">board-controller</prop>
 				<prop key="/di/getEmpList.sp4">emp-controller</prop>
 				<prop key="/di/empInsert.sp4">emp-controller</prop>
 				<prop key="/di/empUpdate.sp4">emp-controller</prop>
@@ -41,6 +42,7 @@
 				<prop key="/board/boardDelete.sp4">boardDelete</prop>
 				<prop key="/board/jsonGetBoardList.sp4">jsonGetBoardList</prop>
 				<prop key="/board/getChatList.sp4">getChatList</prop>
+				<prop key="/board/enterChatroom.sp4">enterChatroom</prop>
 			</props>
 		</property>
 	</bean>

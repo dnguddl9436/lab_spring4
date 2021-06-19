@@ -1,11 +1,10 @@
 package web.mvc;
 
+import java.io.File;
 import java.util.List;
 import java.util.Map;
 
 import org.apache.log4j.Logger;
-
-import com.firebase.realtimeDB.FirebaseChat;
 
 public class Board41Logic {
 	Logger logger = Logger.getLogger(Board41Logic.class);
@@ -73,11 +72,51 @@ public class Board41Logic {
 		return result;
 	}
 
+	public int boardUpdate(Map<String, Object> pmap) {
+		logger.info("boardUpdate 호출 성공");
+		int result = 0;
+		result = boardMDao.boardMUpdate(pmap);
+		return result;
+	}
+
+	public int boardDelete(Map<String, Object> pmap) {
+		logger.info("boardDelete 호출 성공");
+		int result = 0;
+		try {
+			result = boardMDao.boardMDelete(pmap);
+			if(result == 1) {
+				String filePath = "D:\\portfolio_kosmo\\lab_spring4\\spring4_1_1\\WebContent\\pds\\";
+				String filename = pmap.get("bs_file").toString();
+				String fullName = filePath+filename;
+				//실제로 존재하는 파일이름을 객체로 생성해주는 클래스
+				File file = new File(fullName);
+				if(file!=null) {
+					if(file.exists()) {
+						boolean isOk = file.delete();
+						logger.info(isOk);
+						pmap.put("bs_seq", 1);
+						boardSDao.boardSDelete(pmap);
+					}
+				}
+			}
+		} catch (Exception e) {
+			logger.info("Exception: "+e.toString());
+		}
+		return result;
+	}///////////////end of boardDelete
+
 	public List<Map<String, Object>> getChatList(Map<String, Object> target) {
 		List<Map<String,Object>> chatList = null;
 		String nickname = target.get("nickname").toString();
 		chatList = boardMDao.getChatList(nickname);
 		return chatList;
+	}
+
+	public List<Map<String, Object>> enterChatroom(Map<String, Object> target) {
+		List<Map<String,Object>> enterChatroom = null;
+		String nickname = target.get("RoomUid").toString();
+		enterChatroom = boardMDao.enterChatroom(nickname);
+		return enterChatroom;
 	}
 
 }

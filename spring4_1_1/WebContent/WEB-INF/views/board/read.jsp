@@ -55,18 +55,18 @@
 	function updateForm(){
 		//$("#dlg_upd").dialog('open');
 		$("#dlg_upd").dialog({
-			title: 'My Dialog',
-			width: 1000,
-			height: 400,
+			title: '글수정',
+			width: 700,
+			height: 650,
 			closed: false,
 			cache: false,
-			href: 'updateForm.sp4?bm_writer=<%=bm_writer%>&bm_content=<%=bm_content%>&bm_no=<%=bm_no%>&bs_file=<%=bs_file%>',
+			href: 'updateForm.jsp?bm_title=<%=bm_title%>&bm_writer=<%=bm_writer%>&bm_email=<%=bm_email%>&bm_content=<%=bm_content%>&bm_no=<%=bm_no%>&bm_pw=<%=bm_pw%>&bs_file=<%=bs_file%>',
 			modal: true
 		});
 	}
 	function updAction() {
-		console.log("입력액션 호출");
-		$("#f_boardUpd").submit();
+		console.log("수정액션 호출");
+		$("#board_upd").submit();
 	}
 	function boardList(){
 		location.href="./getBoardList.sp4";
@@ -74,6 +74,32 @@
 	function chatList(){
 		let nickname = document.querySelector("#nickname").value;
 		location.href="./getChatList.sp4?nickname="+nickname;
+	}
+	function boardDelAction() {
+		console.log("삭제액션 호출");
+		let db_pw = "<%=bm_pw%>";
+		let u_pw = $("#user_pw").textbox('getValue');
+		$.messager.confirm('Comfirm', '정말 삭제 하시겠습니까?', function(r){
+			if(r) {
+				if(db_pw==u_pw)
+					location.href="boardDelete.sp4?bm_no=<%=bm_no%>&bs_file=<%=bs_file%>";
+				else
+					alert("비밀번호가 틀립니다.");
+			}
+		});
+	}
+	function boardDelView(){
+		$("#dlg_del").dialog({
+			title: '글삭제',
+			width: 400,
+			height: 200,
+			closed: false,
+			cache: false,
+			modal: true
+		});
+	}
+	function boardDelClose(){
+		$("#dlg_del").dialog('close');
 	}
 </script>
 </head>
@@ -112,6 +138,14 @@
 	    <a href="javascript:boardList()" class="easyui-linkbutton" iconCls="icon-search" plain="true">목록</a>
 		<a href="javascript:chatList()" class="easyui-linkbutton" iconCls="icon-help" plain="true">내 채팅방 목록</a>
 	</div>
+	<!--================== [[삭제하기 시작]] ==================-->
+	<div id="dlg_del" title="비번확인" class="easyui-dialog" style="width:600px;height:400px;padding:10px" data-options="closed:'true',modal:'true'">
+		<input class="easyui-passwordbox" label="비번:" labelPosition="top" data-options="width:'100px'" id="user_pw" name="user_pw" required>
+		<a href="javascript:boardDelAction()" class="easyui-linkbutton" iconCls="icon-ok" style="width:90px">확인</a>
+		<a href="javascript:boardDelClose()" class="easyui-linkbutton" iconCls="icon-cancel" style="width:90px">닫기</a>
+		
+	</div>	
+	<!--================== [[삭제하기 끝]] ==================-->
 	<!--================== [[댓글쓰기 화면]] ==================-->
 	<div id="dlg_boardAdd" title="댓글쓰기" class="easyui-dialog" style="width:600px;height:400px;padding:10px" data-options="closed:'true',modal:'true',footer:'#tbar_boardAdd'">	
 	<!-- 

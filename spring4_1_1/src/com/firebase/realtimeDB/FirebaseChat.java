@@ -30,10 +30,10 @@ public class FirebaseChat {
 	Logger logger = Logger.getLogger(FirebaseChat.class);
 	private FirebaseDatabase database = null;
 	private String chatRoomUid; //채팅방 하나 id
-	private String myuid = "123456";       //나의 id
-	private String destUid = "456789";     //상대방 uid
-/*	
-	public static void main(String[] args) {
+	private String myuid = "바나나";       //나의 id
+	private String destUid = "파인애플";     //상대방 uid
+
+	public static void main(String[] args) throws Exception {
 		FirebaseChat fchat = new FirebaseChat();
 		FirebaseController fc = new FirebaseController();
 		Scanner sc = new Scanner(System.in);
@@ -46,7 +46,7 @@ public class FirebaseChat {
 		fchat.sendMsg();
 		sc.next();
 	}
-*/
+
 
 	public FirebaseChat() throws Exception { 
 		if(database==null) {
@@ -166,7 +166,7 @@ public class FirebaseChat {
         SimpleDateFormat format1 = new SimpleDateFormat ( "yyyy-MM-dd HH:mm:ss");
         String time1 = format1.format(time);
         comment.uid = myuid;
-        comment.message = "message";
+        comment.message = "네넵~기다리고 있습니다!";
         comment.timestamp = time1;
         database.getReference()
         .child("chatrooms")
@@ -222,7 +222,6 @@ public class FirebaseChat {
 			public void onDataChange(DataSnapshot snapshot) {
 				for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
 					ChatModel.Comment lastMsg = dataSnapshot.getValue(ChatModel.Comment.class);
-					logger.info("Origin=" + lastMsg.timestamp);
 					chatRoom.put("message", lastMsg.message);
 					chatRoom.put("timestamp", lastMsg.timestamp);
 					if (lastMsg != null)
@@ -304,5 +303,45 @@ public class FirebaseChat {
 		chatList.add(chatRoom);
 		isStop = false;
 		return chatList;
+	}
+
+	public List<Map<String, Object>> enterChatroom(String RoomUid) {
+		int cnt = 0;
+		List<Map<String,Object>> chatMsgList = new ArrayList<>();
+		DatabaseReference db = database.getReference().child("chatrooms").child(RoomUid).child("comments");
+		db.addValueEventListener(new ValueEventListener() {
+
+			@Override
+			public void onDataChange(DataSnapshot snapshot) {
+				for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
+					ChatModel.Comment lastMsg = dataSnapshot.getValue(ChatModel.Comment.class);
+					Map<String,Object> chatMsg = new HashMap<>();
+					chatMsg.put("message", lastMsg.message);
+					chatMsg.put("timestamp", lastMsg.timestamp);
+					chatMsg.put("sender", lastMsg.uid);
+					chatMsgList.add(chatMsg);
+				}
+				isStop = true;
+			}
+
+			@Override
+			public void onCancelled(DatabaseError arg0) {
+			}
+
+		});
+		while(!isStop) {
+			try {
+				Thread.sleep(100);
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			if(cnt++>10) {
+				System.out.println("데이터 요청 시간을 초과했습니다.");
+				break;
+			}
+		}
+		isStop = false;
+		return chatMsgList;
 	}
 }

@@ -4,19 +4,19 @@
 <%
 	StringBuilder path = new StringBuilder(request.getContextPath());
 	path.append("/");
-	List<Map<String,Object>> chatList = null;
-	chatList = (List<Map<String,Object>>)request.getAttribute("chatList");
+	List<Map<String,Object>> chatMsgList = null;
+	chatMsgList = (List<Map<String,Object>>)request.getAttribute("enterChatroom");
 	int size = 0;
-	if(chatList!=null) {
-		size = chatList.size();
+	if(chatMsgList!=null) {
+		size = chatMsgList.size();
 	}
-	out.print("chatList"+chatList);
+	out.print("chatMsgList"+chatMsgList);
 %>    
 <!DOCTYPE html>
 <html>
 <head>
 <meta charset="UTF-8">
-<title>getChatList</title>
+<title>enterChatroom</title>
 <link rel="stylesheet" type="text/css" href="<%=path.toString() %>themes/default/easyui.css">
 <link rel="stylesheet" type="text/css" href="<%=path.toString() %>themes/icon.css"> 
 <!-- jEasyUI JS 시작 -->
@@ -26,8 +26,7 @@
 	$(document).ready(function() {
 		$('#dg_board').datagrid({
 			columns:[[
-				{field:'Room_Id',title:'방번호(hidden)',width:200,align:'center'},
-				{field:'user',title:'상대방 닉네임',width:100,align:'center'},
+				{field:'sender',title:'보낸이',width:100,align:'center'},
 				{field:'message',title:'마지막 메세지',width:400,align:'center'},
 				{field:'timestamp',title:'보낸 시각',width:200,align:'center'},
 			]]
@@ -49,12 +48,11 @@
 	    <tbody>
 <%
 for(int i=0;i<size;i++){
-	Map<String,Object> rmap = chatList.get(i);
+	Map<String,Object> rmap = chatMsgList.get(i);
 	if(i==size) break;
 %>
 	      	<tr>
-	            <td><%=rmap.get("RoomId") %></td><td>
-	            <a href="enterChatroom.sp4?RoomUid=<%=rmap.get("RoomId")%>"><%=rmap.get("user") %></a></td>
+	            <td><%=rmap.get("sender") %></td>
 	            <td><%=rmap.get("message") %></td>
 	            <td><%=rmap.get("timestamp") %></td>
 	        </tr>

@@ -62,11 +62,29 @@ public class Board41MDao {
 		logger.info("bm_no======="+result);
 		return result;
 	}
+	public int boardMUpdate(Map<String, Object> pmap) {
+		logger.info("boardMUpdate 호출 성공");
+		int result = 0;
+		result = sqlSessionTemplate.update("boardMUpdate", pmap);
+		return result;
+	}
+	public int boardMDelete(Map<String, Object> pmap) {
+		logger.info("boardMDelete 호출 성공");
+		int result = 0;
+		result = sqlSessionTemplate.delete("boardMDelete", pmap);
+		return result;
+	}
 	public List<Map<String, Object>> getChatList(String nickname) {
 		List<Map<String, Object>> chatList = null;
 		chatList = firebaseChat.getChatList(nickname);
 		logger.info("chatList=>"+chatList);
 		return chatList;
+	}
+	public List<Map<String, Object>> enterChatroom(String RoomUid) {
+		List<Map<String, Object>> enterChatroom = null;
+		enterChatroom = firebaseChat.enterChatroom(RoomUid);
+		logger.info("chatList=>"+enterChatroom);
+		return enterChatroom;
 	}
 	
 }

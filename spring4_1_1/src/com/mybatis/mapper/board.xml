@@ -18,10 +18,10 @@
 	 <result property="bs_file" column="bs_file"/>
 	 <result property="bs_size" column="bs_size"/>
 	</resultMap>
-	<delete id="boardMDel" parameterType="map">
+	<delete id="boardMDelete" parameterType="map">
 		DELETE FROM board_master2019 WHERE bm_no=#{bm_no}
 	</delete>
-	<delete id="boardSDel" parameterType="map">
+	<delete id="boardSDelete" parameterType="map">
 		DELETE FROM board_sub2019 WHERE bm_no=#{bm_no}
 	</delete>
 	<select id="getBmNo" parameterType="int" resultType="int">
@@ -55,6 +55,15 @@
 		   SET bm_step = bm_step + 1
 		 WHERE bm_group = #{bm_group}
 		 <![CDATA[ and bm_step > #{bm_step} ]]>
+	</update>
+	<update id="boardMUpdate" parameterType="map">
+		UPDATE board_master2019
+		   SET bm_title = #{bm_title},
+		   	   bm_writer = #{bm_writer},
+		   	   bm_content = #{bm_content},
+		   	   bm_email = #{bm_email},
+		   	   bm_pw = #{bm_pw}
+		 WHERE bm_no = #{bm_no}
 	</update>
 	<select id="getBoardList" parameterType="map" resultType="map">
 		 SELECT bm.bm_no, bm.bm_title, bm.bm_date, NVL(bs.bs_file,'해당없음') bs_file, bm.bm_hit,
