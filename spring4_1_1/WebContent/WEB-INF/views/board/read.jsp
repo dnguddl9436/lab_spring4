@@ -71,9 +71,12 @@
 	function boardList(){
 		location.href="./getBoardList.sp4";
 	}
-	function chatList(){
+	function chatroom(){
 		let nickname = document.querySelector("#nickname").value;
-		location.href="./getChatList.sp4?nickname="+nickname;
+		if(nickname==null || nickname=="")
+			alert("자신의 닉네임을 입력해주세요.");
+		else
+			$("#chat").submit();
 	}
 	function boardDelAction() {
 		console.log("삭제액션 호출");
@@ -123,10 +126,6 @@
 	    	<td><input id="bm_content" value="<%=bm_content%>" name="bm_content" data-options="multiline:'true', width:'570px', height:'90px'" class="easyui-textbox"></td>
 	    	</tr>
 	    	<tr>
-	    	<td>닉네임</td>
-	    	<td><input id="nickname" value="" data-options="multiline:'true', width:'570px', height:'90px'" class="easyui-textbox"></td>
-	    	</tr>
-	    	<tr>
 	    	<td>비밀번호</td>
 	    	<td><input id="bm_pw" value="<%=bm_pw%>" name="bm_pw" class="easyui-passwordbox"></td>
 	    	</tr>	    	
@@ -136,8 +135,12 @@
 	    <a href="javascript:updateForm()" class="easyui-linkbutton" iconCls="icon-add" plain="true">수정</a>
 	    <a href="javascript:boardDelView()" class="easyui-linkbutton" iconCls="icon-remove" plain="true">삭제</a>
 	    <a href="javascript:boardList()" class="easyui-linkbutton" iconCls="icon-search" plain="true">목록</a>
-		<a href="javascript:chatList()" class="easyui-linkbutton" iconCls="icon-help" plain="true">내 채팅방 목록</a>
+		<a href="javascript:chatroom()" class="easyui-linkbutton" iconCls="icon-help" plain="true">대화하기</a>
 	</div>
+	<form id="chat" action="chatroom.jsp" method="post">
+		<input class="easyui-textbox" id="nickname" name="nickname" data-options="prompt:'닉네임 입력'">
+	    <input value="<%=bm_writer%>" type="hidden" id="dest" name="dest">
+	</form>
 	<!--================== [[삭제하기 시작]] ==================-->
 	<div id="dlg_del" title="비번확인" class="easyui-dialog" style="width:600px;height:400px;padding:10px" data-options="closed:'true',modal:'true'">
 		<input class="easyui-passwordbox" label="비번:" labelPosition="top" data-options="width:'100px'" id="user_pw" name="user_pw" required>

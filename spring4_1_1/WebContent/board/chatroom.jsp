@@ -24,30 +24,51 @@
 	content="width=device-width, initial-scale=1.0" />
 <style>
 ::-webkit-scrollbar {
-	display: none;
+	/* display: none; */
+}
+html, body {
+	width: 100%;
+	height: 100%;
 }
 .dest{
-	font-size: 24px;
+	font-size: 16px;
 	background-color: white;
 	padding: 10px;
 	margin: 0 10px 0 10px;
+	align: left;
+	display:inline-block;
+	border-radius: 10px 10px 10px 10px;
 }
 .me{
-	font-size: 24px;
-	background-color: #ffeb33;
+	font-size: 16px;
+	background-color: #ffc37b;
 	padding: 10px;
 	margin: 0 10px 0 10px;
 	align: right;
+	display:inline-block;
+	border-radius: 10px 10px 10px 10px;
 }
 .divchat {
-	height: 10px;
+	height: 2px;
+}
+.timeline {
+	color: white;
+	height: 20px;
+	width: 80%;
+	text-align: center;
+	vertical-align: middle;
+	background-color: #536a8a;
+	border-radius: 10px 10px 10px 10px;
+	margin: auto;
 }
 .timestamp {
-	margin-top: 10px;
+	color: white;
+	display:inline-block;
 }
 .roomName {
+	color: white;
 	font-size: 36px;
-	background-color: #a9bdce;
+	background-color: #536a8a;
 }
 </style>
 <title></title>
@@ -65,24 +86,71 @@
 	let roomKey = "<%=request.getParameter("roomKey")%>";
 	let nickname = "<%=request.getParameter("nickname")%>";
 	let dest = "<%=request.getParameter("dest")%>";
+	let prevTime = "0000-00-00";
 	$(document).ready(function(){
+		console.log("C");
+		if(roomKey=="null") {
+			console.log("B");
+			let checkRoom = firebase.database().ref("chatrooms").orderByChild("users/"+nickname).equalTo(true);
+			checkRoom.once('value', function(snapshot){
+				if(snapshot.val()==null) {
+					createRoom();
+					console.log("A");
+				}
+				else {
+					let reading = firebase.database().ref("chatrooms").orderByChild("users/"+nickname).equalTo(true);
+					reading.once('child_added',function(snapshot){
+						roomKey = snapshot.key;
+						init();
+					});
+				}
+			});
+		}
+		else
+			init();
+	});
+	function init(){
+		console.log(dest);
+		console.log(roomKey);
+		console.log(nickname);
 		$(".roomName").text(dest);
 		$("title").text(dest+"님과의 채팅방");
 		let reading = firebase.database().ref("chatrooms/"+roomKey+"/comments");
 		reading.on('child_added', getChatMsg);
-	});
+	}
+	function createRoom() {
+		console.log("C");
+		let newKey = firebase.database().ref("chatrooms").push().key;
+		roomKey = newKey;
+		let reading = firebase.database().ref("chatrooms/"+newKey+"/users");
+		reading.set({
+			<%=request.getParameter("nickname")%> : true,
+			<%=request.getParameter("dest")%> : true
+		});
+		init();
+	}
 	function getChatMsg(comments){
 		let msgKey = comments.key;
 		let msg = comments.val().message;
 		let timestamp = comments.val().timestamp;
+		let dayStamp = timestamp.substr(0,10);
+		let hourStamp = timestamp.substr(11,5);
 		let sender = comments.val().uid;
         let html = "<div class='divchat'></div>";
+        console.log(dayStamp);
+		if(prevTime!=dayStamp) {
+			html += "<div style='height:18px;'></div>";
+			html += "<div class='timeline'>"+dayStamp+"</div>";
+			html += "<div style='height:20px;'></div>";
+			prevTime = dayStamp;
+		}
         if(nickname==sender)
-        	html += "<div align='right'><span class='timestamp'>"+timestamp+"</span><span class='me'>"+msg+"</span></div>";
+        	html += "<div align='right'><div class='timestamp'>"+hourStamp+"</div><div class='me'>"+msg+"</div></div>";
         else
-        	html += "<div align='left'><span class='dest'>"+msg+"</span><span class='timestamp'>"+timestamp+"</span></div>";
+        	html += "<div align='left'><div class='dest'>"+msg+"</div><div class='timestamp'>"+hourStamp+"</div></div>";
         html += "<div class='divchat'></div>";
         $(".collection").append(html);
+		$('.col').scrollTop(document.querySelector(".col").scrollHeight);
 	}
 	function sendMsg() {
 		let msg_input = $("#input_msg").val();
@@ -117,14 +185,14 @@
 	}
 	</script>
 <body>
-      <div>
-        <div class="col s3" style="background-color: #b2c7d9; padding:0; margin:0; overflow-y:auto; overflow-x:hidden; height:1080px; -ms-overflow-style: none;">
+      <div style="width:100%; height:100%;">
+        <div class="col s3" style="background-color: #627ea4; padding:0; margin:0; overflow-y:auto; overflow-x:hidden; height:90%; -ms-overflow-style: none;">
           <!-- Grey navigation panel -->
           <div class="roomName">상대방</div>
           <div class="divchat"></div>
           <ul class="collection"  style="padding:0; margin:0; border:none;"></ul>
         </div>
-    <div align="center" style="background-color: white;"><input id="input_msg" onkeyup="enterkey();" style="width:1000px;"><button id="btn_msg" onClick="sendMsg()">전송</button></div>
+    <div align="center" style="background-color: white; height:10%;"><input id="input_msg" onkeyup="enterkey();" style="width:80%; padding:10px;"><button id="btn_msg" style="width:10%;" onClick="sendMsg()">전송</button></div>
 
     <div class="preloader-wrapper big active" style="position:absolute; z-index:1000; left:50%; top:50%; display:none;">
         <div class="spinner-layer spinner-blue-only">

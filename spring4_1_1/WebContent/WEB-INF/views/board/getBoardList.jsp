@@ -62,8 +62,14 @@
 	}
 	function chatroomList(){
 		let nickname = $('#nickname').val();
-		$("#chat").submit();
+		if(nickname==null || nickname=="")
+			alert("자신의 닉네임을 입력해주세요.");
+		else
+			$("#chat").submit();
 	}
+    function openErrForm() {
+    	$('#err_ins').dialog('open');
+    }
 </script>
 </head>
 <body>
@@ -198,6 +204,28 @@ else{//조회 결과가 있는데....
     <input id="nickname" name="nickname" class="easyui-textbox" data-options="prompt:'닉네임'">
 	<a href="javascript:chatroomList()" class="easyui-linkbutton" iconCls="icon-help" plain="true">내 채팅방 목록</a>
     </form>
+    <div id="err_ins" class="easyui-dialog" title="심부름 등록" data-options="iconCls:'icon-save',closed:'true'" style="width:600px;height:650px;padding:10px">
+        <div style="margin-bottom:20px">
+            <input id="iTitle" class="easyui-textbox" name="bm_title" label="심부름 물건:" labelPosition="top" style="width:100%;">
+        </div>
+        <div style="margin-bottom:20px">
+            <input id="iWriter" class="easyui-textbox" name="bm_writer" label="심부름 물건 가격:" labelPosition="top" style="width:100%;">
+        </div>
+        <div style="margin-bottom:20px">
+            <input id="iEmail" class="easyui-textbox" name="bm_email" label="심부름값:" labelPosition="top" style="width:100%;">
+        </div>
+        <div style="margin-bottom:20px">
+            <input id="iContent" class="easyui-textbox" name="bm_content" label="심부름 내용:" labelPosition="top" style="width:100%;">
+        </div>
+        <div style="margin-bottom:20px">
+            <input id="iPw" class="easyui-textbox" name="bm_pw" label="닉네임:" labelPosition="top" style="width:100%;">
+        </div>
+		<div id="ft_ins">
+			<a href="javascript:insAction()" class="easyui-linkbutton" data-options="iconCls:'icon-save',plain:true">저장</a>
+			<a href="#" class="easyui-linkbutton" data-options="iconCls:'icon-cancel',plain:true">취소</a>
+		</div>
+    </div>
+	<a href="javascript:openErrForm()" class="easyui-linkbutton" iconCls="icon-help" plain="true">심부름 등록</a>
     <!-- 글쓰기 화면 끝 -->
 </body>
 </html>
