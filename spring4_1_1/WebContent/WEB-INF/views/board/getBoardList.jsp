@@ -24,7 +24,14 @@
 <!-- jEasyUI JS 시작 -->
 <script type="text/javascript" src="<%=path.toString() %>js/jquery.min.js"></script>
 <script type="text/javascript" src="<%=path.toString() %>js/jquery.easyui.min.js"></script>   
+<script defer src="https://www.gstatic.com/firebasejs/8.6.8/firebase-app.js"></script>
+<script defer src="https://www.gstatic.com/firebasejs/8.6.8/firebase-database.js"></script>
+<script defer src="./init-firebase.js"></script>
 <script type="text/javascript">
+	let my_lat = 0.0;
+	let my_lon = 0.0;
+	let mem_email = "test@email";
+	let locKey = "";
 	function boardSel() {
 		$('#dg_board').datagrid({
 			url: './jsonGetBoardList.sp4',
@@ -70,6 +77,76 @@
     function openErrForm() {
     	$('#err_ins').dialog('open');
     }
+    function closeErrForm() {
+    	$('#err_ins').dialog('close');
+    }
+    function getTime(){
+		let today = new Date();
+
+		let year = today.getFullYear();
+		let month = ('0' + (today.getMonth() + 1)).slice(-2);
+		let day = ('0' + today.getDate()).slice(-2);
+
+		let hours = ('0' + today.getHours()).slice(-2); 
+		let minutes = ('0' + today.getMinutes()).slice(-2);
+		let seconds = ('0' + today.getSeconds()).slice(-2); 
+
+		let dateString = year + '-' + month  + '-' + day;
+		let timeString = hours + ':' + minutes  + ':' + seconds;
+		let rstTime = dateString+" "+timeString;
+		return rstTime;
+	}
+    function getLoc(){
+        let watchID = navigator
+        .geolocation
+        .watchPosition((position) => {
+        	my_lat = position.coords.latitude;
+        	my_lon = position.coords.longitude;
+            console.log(position.coords.latitude, position.coords.longitude);
+        });
+    }
+    function insertErr() {
+		let reading = firebase.database().ref("errand");
+		reading.push().set({
+			errand_item : $('#errand_item').val(),
+			errand_request_date : getTime(),
+			errand_item_price_req : $('#errand_item_price_req').val(),
+			errand_price : $('#errand_price').val(),
+			errand_total_price : $('#errand_item_price_req').val()*1+$('#errand_price').val()*1,
+			errand_content : $('#errand_content').val(),
+			mem_email : $('#mem_email').val(),
+			errand_lat : my_lat,
+			errand_lon : my_lon,
+			rider_email : ""
+		});
+    }
+    function initLoc() {
+		let refLoc = firebase.database().ref("loc").orderByChild(mem_email).equalTo(true);
+		refLoc.once('value', function(snapshot){
+			if(snapshot.val()==null) {
+				locKey = firebase.database().ref("loc").push().key;
+				console.log("null and locKey="+locKey);
+			}
+			else {
+				refLoc.once('child_added',function(snapshot){
+					locKey = snapshot.key;
+					console.log("not null and locKey="+locKey);
+				});
+			}
+		});
+    }
+    function updateLoc() {
+    	if(locKey != "") {
+        	getLoc();
+	    	let locData = {
+	    		lat : my_lat,
+	    		lon : my_lon,
+	    		mem_email : mem_email
+	    	}
+	    	firebase.database().ref("loc/"+locKey).update(locData);
+    	}
+    	console.log("locKey of updateLoc="+locKey);
+    }
 </script>
 </head>
 <body>
@@ -106,6 +183,9 @@
 			//alert('삭제');
 			boardDel();
 		});
+		getLoc();
+		initLoc();
+		setInterval(updateLoc,1000);
 	});
 </script>
 	<table id="dg_board" class="easyui-datagrid" data-options="title:'게시판',toolbar:'#tb_board',width:1000,height:350" style="width:1000px;height:350px">
@@ -206,23 +286,23 @@ else{//조회 결과가 있는데....
     </form>
     <div id="err_ins" class="easyui-dialog" title="심부름 등록" data-options="iconCls:'icon-save',closed:'true'" style="width:600px;height:650px;padding:10px">
         <div style="margin-bottom:20px">
-            <input id="iTitle" class="easyui-textbox" name="bm_title" label="심부름 물건:" labelPosition="top" style="width:100%;">
+            <input id="errand_item" class="easyui-textbox" label="심부름 물건:" labelPosition="top" style="width:100%;">
         </div>
         <div style="margin-bottom:20px">
-            <input id="iWriter" class="easyui-textbox" name="bm_writer" label="심부름 물건 가격:" labelPosition="top" style="width:100%;">
+            <input id="errand_item_price_req" class="easyui-textbox" label="심부름 물건 가격:" labelPosition="top" style="width:100%;">
         </div>
         <div style="margin-bottom:20px">
-            <input id="iEmail" class="easyui-textbox" name="bm_email" label="심부름값:" labelPosition="top" style="width:100%;">
+            <input id="errand_price" class="easyui-textbox" label="심부름값:" labelPosition="top" style="width:100%;">
         </div>
         <div style="margin-bottom:20px">
-            <input id="iContent" class="easyui-textbox" name="bm_content" label="심부름 내용:" labelPosition="top" style="width:100%;">
+            <input id="errand_content" class="easyui-textbox" label="심부름 내용:" labelPosition="top" style="width:100%;">
         </div>
         <div style="margin-bottom:20px">
-            <input id="iPw" class="easyui-textbox" name="bm_pw" label="닉네임:" labelPosition="top" style="width:100%;">
+            <input id="mem_email" class="easyui-textbox" label="닉네임:" labelPosition="top" style="width:100%;">
         </div>
 		<div id="ft_ins">
-			<a href="javascript:insAction()" class="easyui-linkbutton" data-options="iconCls:'icon-save',plain:true">저장</a>
-			<a href="#" class="easyui-linkbutton" data-options="iconCls:'icon-cancel',plain:true">취소</a>
+			<a href="javascript:insertErr()" class="easyui-linkbutton" data-options="iconCls:'icon-save',plain:true">저장</a>
+			<a href="javascript:closeErrForm()" class="easyui-linkbutton" data-options="iconCls:'icon-cancel',plain:true">취소</a>
 		</div>
     </div>
 	<a href="javascript:openErrForm()" class="easyui-linkbutton" iconCls="icon-help" plain="true">심부름 등록</a>

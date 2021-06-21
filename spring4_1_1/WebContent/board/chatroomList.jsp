@@ -52,24 +52,29 @@
 		let reading = firebase.database().ref("chatrooms").orderByChild("users/"+nickname).equalTo(true);
 		reading.on('child_added', test_child_added);
 		reading.on('child_changed', test_child_changed);
+		//reading.off('child_changed');
 	});
 	function test_child_added(data) {
 		key = data.key;
 		let userData = firebase.database().ref("chatrooms/"+key).child("users");
 		let msgData = firebase.database().ref("chatrooms/"+key).child("comments").limitToLast(1);
-		msgData.once('child_added', getMsgData);
-		userData.once('child_added', getUserData);
-        let html =
-            "<li id='"+key+"' class=\"collection-item avatar\" onclick=\"enterChatroom(this.id);\" >" +
-            "<i class=\"material-icons circle red\">" + destNickname.substr(0, 1) + "</i>" +
-            "<span class=\"title\">" + destNickname + "</span>" +
-            "<p class='txt'>" + lastMsg + "<br>" +
-            "</p>" +
-            "<p class='time'>" + timestamp + "<br>" +
-            "</p>" +
-            "<a href=\"#!\" onclick=\"fn_delete_data('"+key+"')\"class=\"secondary-content\"><i class=\"material-icons\">grade</i></a>"+
-            "</li>";
-        $(".collection").append(html);
+		msgData.once('value', function(data){
+			if(data.val()!=null) {
+				msgData.once('child_added', getMsgData);
+				userData.once('child_added', getUserData);
+		        let html =
+		            "<li id='"+key+"' class=\"collection-item avatar\" onclick=\"enterChatroom(this.id,'"+destNickname+"');\" >" +
+		            "<i class=\"material-icons circle red\">" + destNickname.substr(0, 1) + "</i>" +
+		            "<span class=\"title\">" + destNickname + "</span>" +
+		            "<p class='txt'>" + lastMsg + "<br>" +
+		            "</p>" +
+		            "<p class='time'>" + timestamp + "<br>" +
+		            "</p>" +
+		            "<a href=\"#!\" onclick=\"fn_delete_data('"+key+"')\"class=\"secondary-content\"><i class=\"material-icons\">grade</i></a>"+
+		            "</li>";
+		        $(".collection").append(html);
+			}
+		});
 	}
 	function test_child_changed(data) {
 		key = data.key;
@@ -92,10 +97,10 @@
 		console.log("lastMsg="+lastMsg);
 		console.log("timeStamp="+timestamp);
 	}
-	function enterChatroom(roomKey){
+	function enterChatroom(roomKey,dest){
 		$("#roomKey").val(roomKey);
 		$("#nickname").val(nickname);
-		$("#dest").val(destNickname);
+		$("#dest").val(dest);
 		$("#destForm").submit();
 	}
 </script>

@@ -69,6 +69,7 @@ html, body {
 	color: white;
 	font-size: 36px;
 	background-color: #536a8a;
+	display: fixed;
 }
 </style>
 <title></title>
@@ -88,14 +89,11 @@ html, body {
 	let dest = "<%=request.getParameter("dest")%>";
 	let prevTime = "0000-00-00";
 	$(document).ready(function(){
-		console.log("C");
 		if(roomKey=="null") {
-			console.log("B");
 			let checkRoom = firebase.database().ref("chatrooms").orderByChild("users/"+nickname).equalTo(true);
 			checkRoom.once('value', function(snapshot){
 				if(snapshot.val()==null) {
 					createRoom();
-					console.log("A");
 				}
 				else {
 					let reading = firebase.database().ref("chatrooms").orderByChild("users/"+nickname).equalTo(true);
@@ -110,16 +108,12 @@ html, body {
 			init();
 	});
 	function init(){
-		console.log(dest);
-		console.log(roomKey);
-		console.log(nickname);
 		$(".roomName").text(dest);
 		$("title").text(dest+"님과의 채팅방");
 		let reading = firebase.database().ref("chatrooms/"+roomKey+"/comments");
 		reading.on('child_added', getChatMsg);
 	}
 	function createRoom() {
-		console.log("C");
 		let newKey = firebase.database().ref("chatrooms").push().key;
 		roomKey = newKey;
 		let reading = firebase.database().ref("chatrooms/"+newKey+"/users");
@@ -137,7 +131,6 @@ html, body {
 		let hourStamp = timestamp.substr(11,5);
 		let sender = comments.val().uid;
         let html = "<div class='divchat'></div>";
-        console.log(dayStamp);
 		if(prevTime!=dayStamp) {
 			html += "<div style='height:18px;'></div>";
 			html += "<div class='timeline'>"+dayStamp+"</div>";
