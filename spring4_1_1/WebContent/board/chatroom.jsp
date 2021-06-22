@@ -178,26 +178,15 @@ html, body {
 	}
 	</script>
 <body>
-      <div style="width:100%; height:100%;">
+    <div style="width:100%; height:100%;">
         <div class="col s3" style="background-color: #627ea4; padding:0; margin:0; overflow-y:auto; overflow-x:hidden; height:90%; -ms-overflow-style: none;">
-          <!-- Grey navigation panel -->
           <div class="roomName">상대방</div>
           <div class="divchat"></div>
+          <!-- insert here : 대화 공지사항 -->
           <ul class="collection"  style="padding:0; margin:0; border:none;"></ul>
         </div>
     <div align="center" style="background-color: white; height:10%;"><input id="input_msg" onkeyup="enterkey();" style="width:80%; padding:10px;"><button id="btn_msg" style="width:10%;" onClick="sendMsg()">전송</button></div>
 
-    <div class="preloader-wrapper big active" style="position:absolute; z-index:1000; left:50%; top:50%; display:none;">
-        <div class="spinner-layer spinner-blue-only">
-          <div class="circle-clipper left">
-            <div class="circle"></div>
-          </div><div class="gap-patch">
-            <div class="circle"></div>
-          </div><div class="circle-clipper right">
-            <div class="circle"></div>
-          </div>
-        </div>
-      </div>
   </div>
 <script>
       </script>

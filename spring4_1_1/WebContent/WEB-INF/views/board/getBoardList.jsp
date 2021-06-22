@@ -99,7 +99,7 @@
     function getLoc(){
         let watchID = navigator
         .geolocation
-        .watchPosition((position) => {
+        .watchPosition(function(position) {
         	my_lat = position.coords.latitude;
         	my_lon = position.coords.longitude;
             console.log(position.coords.latitude, position.coords.longitude);
@@ -117,11 +117,12 @@
 			mem_email : $('#mem_email').val(),
 			errand_lat : my_lat,
 			errand_lon : my_lon,
-			rider_email : ""
+			rider_email : "",
+			status : "W" 
 		});
     }
     function initLoc() {
-		let refLoc = firebase.database().ref("loc").orderByChild(mem_email).equalTo(true);
+		let refLoc = firebase.database().ref("loc").orderByChild("mem_email").equalTo(mem_email);
 		refLoc.once('value', function(snapshot){
 			if(snapshot.val()==null) {
 				locKey = firebase.database().ref("loc").push().key;
@@ -146,6 +147,68 @@
 	    	firebase.database().ref("loc/"+locKey).update(locData);
     	}
     	console.log("locKey of updateLoc="+locKey);
+    }
+    function showErrand(){
+    	let reading = firebase.database().ref("errand");
+    	reading.on("value", function(snapshot){
+    		snapshot.forEach(function(childSnapshot) {
+    			errandData = childSnapshot.val();
+	            let html =
+	                "<li id='"+childSnapshot.key+"' class=\"collection-item avatar\" onclick=\"chooseErrand(this.id);\" >" +
+	                "<i class=\"material-icons circle red\">" + errandData.mem_nickname.substr(0, 1) + "</i>" +
+	                "<span class=\"title\">" + errandData.mem_nickname + "</span>" +
+	                "<p class='txt'>" + errandData.errand_item + "<br>" +
+	                "</p>" +
+	                "<p class='time'>" + errandData.errand_content + "<br>" +
+	                "</p>" +
+	                "<a href=\"#!\" onclick=\"fn_delete_data('"+childSnapshot.key+"')\"class=\"secondary-content\"><i class=\"material-icons\">grade</i></a>"+
+	                "</li>";
+	            $(".collection").append(html);
+    		});
+	    });
+    }
+    //라이더가 심부름 하겠다는 버튼을 눌렀을 때 심부름 테이블 rider 속성 변경
+    function doErrand(errandKey){
+		let nickname = {
+				rider : $('#nickname').val()
+		}
+    	firebase.database().ref("errand/"+errandKey).update(nickname);
+		//아래는 라이더입장에서 요청자가 수락하는지 감시하는 코드
+    	let observeRider = firebase.database().ref("errand/"+errandKey);
+		observeRider.on('value', function(snapshot){
+    		if(snapshot.val().rider==""){
+    			console.log("거절당하셨습니다.")
+    			observeRider.off();
+    		}
+    		else if()
+    	});
+    }
+    //자신이 요청한 심부름 테이블을 감시하다가 라이더가 배달한다고 하면 감지
+    function observe(){
+		let refErr = firebase.database().ref("errand").orderByChild("mem_email").equalTo(mem_email);
+		refErr.on('value',function(snapshot){
+			refErr.forEach(function(childSnapshot){
+				if(rider!="") {
+					confirmModal(childSnapshot.key);
+				}
+			});
+		});
+    }
+    //라이더가 심부름 하겠다는 버튼을 눌렀을 때 요청자에게 띄우는 모달창
+    function confirmModal(errandKey){
+    	console.log("해당 라이더를 승낙하시겠어요?");
+    	//승낙할 시
+    	agreeErrand(errandKey);
+    	//거부할 시
+    	degreeErrand(errandKey);
+    }
+    //승낙할 시
+    function agreeErrand(errandKey){
+    	
+    }
+    //거부할 시
+    function degreeErrand(errandKey){
+    	
     }
 </script>
 </head>
@@ -186,6 +249,7 @@
 		getLoc();
 		initLoc();
 		setInterval(updateLoc,1000);
+		showErrand();
 	});
 </script>
 	<table id="dg_board" class="easyui-datagrid" data-options="title:'게시판',toolbar:'#tb_board',width:1000,height:350" style="width:1000px;height:350px">
@@ -306,6 +370,8 @@ else{//조회 결과가 있는데....
 		</div>
     </div>
 	<a href="javascript:openErrForm()" class="easyui-linkbutton" iconCls="icon-help" plain="true">심부름 등록</a>
+
+    <ul class="collection"  style="padding:0; margin:0;"></ul>
     <!-- 글쓰기 화면 끝 -->
 </body>
 </html>
