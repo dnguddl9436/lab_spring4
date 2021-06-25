@@ -43,17 +43,17 @@
 	<script defer src="https://www.gstatic.com/firebasejs/8.6.8/firebase-database.js"></script>
 	<script defer src="./init-firebase.js"></script>
 	<script type="text/javascript">
-	let nickname = "<%=request.getParameter("nickname")%>";
-	let destNickname = "";
-	let key = "";
-	let lastMsg = "";
-	let timestamp = "";
+	let nickname = "<%=request.getParameter("nickname")%>";//현재 접속자의 닉네임
+	let destNickname = "";//상대방의 닉네임
+	let key = "";//채팅방 고유 키
+	let lastMsg = "";//마지막 메세지
+	let timestamp = "";//메세지 보낸 시각
 	$(document).ready(function(){
 		let reading = firebase.database().ref("chatrooms").orderByChild("users/"+nickname).equalTo(true);
 		reading.on('child_added', test_child_added);
 		reading.on('child_changed', test_child_changed);
-		//reading.off('child_changed');
 	});
+	//채팅방 목록 불러와서 화면에 보여주기 & 새로운 채팅방이 추가되는지 감시
 	function test_child_added(data) {
 		key = data.key;
 		let userData = firebase.database().ref("chatrooms/"+key).child("users");
@@ -76,6 +76,7 @@
 			}
 		});
 	}
+	//채팅방의 내용이 바뀌는지 감시
 	function test_child_changed(data) {
 		key = data.key;
 		let userData = firebase.database().ref("chatrooms/"+key).child("users");
@@ -85,18 +86,21 @@
         $("#"+key+" > .time").text(timestamp);
         $("#"+key+" > .txt").text(lastMsg);
 	}
+	//상대방의 닉네임을 destNickname변수에 저장
 	function getUserData(data){
 		if(data.key != nickname) {
 			destNickname = data.key;
 			console.log("destNickname = "+destNickname);
 		}
 	}
+	//마지막 메세지의 내용과 시간을 가져옴
 	function getMsgData(data){
 		lastMsg = data.val().message;
 		timestamp = data.val().timestamp;
 		console.log("lastMsg="+lastMsg);
 		console.log("timeStamp="+timestamp);
 	}
+	//채팅방에 입장할 때 채팅방 고유 번호, 자신의 닉네임, 상대의 닉네임을 전달
 	function enterChatroom(roomKey,dest){
 		$("#roomKey").val(roomKey);
 		$("#nickname").val(nickname);
