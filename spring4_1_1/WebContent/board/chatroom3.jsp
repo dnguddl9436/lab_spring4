@@ -30,7 +30,6 @@
 html, body {
 	width: 100%;
 	height: 100%;
-	min-width: 550px;
 }
 /* 상대방 말풍선 */
 .dest{
@@ -39,7 +38,7 @@ html, body {
 	padding: 10px;
 	margin: 2px 10px 2px 10px;
 	align: left;
-	display: inline-block;
+	display:inline-block;
 	border-radius: 10px 10px 10px 10px;
 	max-width: 400px;
 }
@@ -50,17 +49,9 @@ html, body {
 	padding: 10px;
 	margin: 2px 10px 2px 10px;
 	align: right;
-	display: inline-block;
+	display:inline-block;
 	border-radius: 10px 10px 10px 10px;
 	max-width: 400px;
-}
-/* 읽음표시 */
-.read {
-	color: #ffc37b;
-	display: inline-block;
-	margin: 0px 10px 0px 10px;
-	position: relative;
-	top: 10px;
 }
 /* 날짜변경선 */
 .timeline {
@@ -79,8 +70,6 @@ html, body {
 .timestamp {
 	color: white;
 	display:inline-block;
-	position: relative;
-	top: 10px;
 }
 /* 채팅방 이름(상단) */
 .roomName {
@@ -135,65 +124,43 @@ html, body {
 	function init(){
 		$(".roomName").text(dest);
 		$("title").text(dest+"님과의 채팅방");
-		getChatMsg();
+		let reading = firebase.database().ref("chatrooms/"+roomKey+"/comments");
+		reading.on('child_added', getChatMsg);
 	}
 	//채팅방 새로 개설
 	function createRoom() {
 		let newKey = firebase.database().ref("chatrooms").push().key;
 		roomKey = newKey; //새로운 채팅방 고유 키 생성
 		//생성한 고유 키로 테이블을 만들고 그 안에 유저 정보 저장
-		let reading = firebase.database().ref("chatrooms/"+newKey);
+		let reading = firebase.database().ref("chatrooms/"+newKey+"/users");
 		reading.set({
-			users : {
-				<%=request.getParameter("nickname")%> : true,
-				<%=request.getParameter("dest")%> : true
-			},
-			unread : {
-				<%=request.getParameter("nickname")%> : 0,
-				<%=request.getParameter("dest")%> : 0
-			}
+			<%=request.getParameter("nickname")%> : true,
+			<%=request.getParameter("dest")%> : true
 		});
 		init();
 	}
 	//파이어베이스에 저장되어있는 채팅기록들을 불러와 보여줌
-	function getChatMsg(){
-		let reading = firebase.database().ref("chatrooms/"+roomKey+"/comments");
-		reading.on('child_added', function(comments){
-			let msgKey = comments.key;//메세지 고유 키
-			let msg = comments.val().message;//메세지 내용
-			let timestamp = comments.val().timestamp;//메세지 보낸 시각
-			let dayStamp = timestamp.substr(0,10);//YYYY-MM-DD
-			let hourStamp = timestamp.substr(11,5);//HH:mm
-			let sender = comments.val().uid;//메세지 보낸 유저의 닉네임
-			let read = comments.val().read;//메세지 읽음 표시
-	        let html = "";
-			//날짜(하루단위)가 같지않으면 날짜변경선 생성
-			if(prevTime!=dayStamp) {
-				html += "<div class='timeline'>"+dayStamp+"</div>";
-				prevTime = dayStamp;
-			}
-	        if(nickname==sender) //내가 보낸 메세지일 경우
-	        	html += "<div align='right' id='"+msgKey+"'><div class='read'>"+read+"</div><div class='timestamp'>"+hourStamp+"</div><div class='me'>"+msg+"</div></div>";
-	        else { //상대가 보낸 메세지일 경우
-	        	html += "<div align='left' id='"+msgKey+"'><div class='dest'>"+msg+"</div><div class='timestamp'>"+hourStamp+"</div><div class='read'>"+read+"</div></div>";
-	        }
-	        //가져온 정보들로 구성된 메세지박스<div>를 화면에 출력
-	       	$(".collection").append(html);
-	        //스크롤을 맨 아래로 내려줌
-			$('.col').scrollTop(document.querySelector(".col").scrollHeight);
-			if(nickname!=sender && read==1) {
-				reading.child(msgKey).update({read:""});
-			}
-		});
-		updateRead();
-	}
-	//메세지 감시하다가 읽으면 읽음표시 없애기
-	function updateRead(){
-		let reading = firebase.database().ref("chatrooms/"+roomKey+"/comments");
-		reading.on('child_changed', function(comments){
-			$("#"+comments.key).children(".read").html("");
-			firebase.database().ref("chatrooms/"+roomKey+"/unread/").update({<%=request.getParameter("nickname")%> : 0});
-		});
+	function getChatMsg(comments){
+		let msgKey = comments.key;//메세지 고유 키
+		let msg = comments.val().message;//메세지 내용
+		let timestamp = comments.val().timestamp;//메세지 보낸 시각
+		let dayStamp = timestamp.substr(0,10);//YYYY-MM-DD
+		let hourStamp = timestamp.substr(11,5);//HH:mm
+		let sender = comments.val().uid;//메세지 보낸 유저의 닉네임
+        let html = "";
+		//날짜(하루단위)가 같지않으면 날짜변경선 생성
+		if(prevTime!=dayStamp) {
+			html += "<div class='timeline'>"+dayStamp+"</div>";
+			prevTime = dayStamp;
+		}
+        if(nickname==sender) //내가 보낸 메세지일 경우
+        	html += "<div align='right'><div class='timestamp'>"+hourStamp+"</div><div class='me'>"+msg+"</div></div>";
+        else //상대가 보낸 메세지일 경우
+        	html += "<div align='left'><div class='dest'>"+msg+"</div><div class='timestamp'>"+hourStamp+"</div></div>";
+        //가져온 정보들로 구성된 메세지박스<div>를 화면에 출력
+       	$(".collection").append(html);
+        //스크롤을 맨 아래로 내려줌
+		$('.col').scrollTop(document.querySelector(".col").scrollHeight);
 	}
 	//메세지 보내는 함수
 	function sendMsg() {
@@ -208,13 +175,8 @@ html, body {
 		reading.push().set({
 			message : msg_input,
 			timestamp : getTime(),
-			uid : nickname,
-			read : 1
+			uid : nickname
 		});
-		//unread를 1씩 올려주는 트랜잭션
-		let updates = {};
-		updates["chatrooms/"+roomKey+"/unread/"+dest] = firebase.database.ServerValue.increment(1);
-		firebase.database().ref().update(updates);
 	}
 	//현재 시간 구하는 함수, YYYY-MM-DD HH:mm:SS 형식으로 반환된다.
 	function getTime(){

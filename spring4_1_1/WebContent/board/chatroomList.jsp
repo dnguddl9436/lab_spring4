@@ -48,6 +48,7 @@
 	let key = "";//채팅방 고유 키
 	let lastMsg = "";//마지막 메세지
 	let timestamp = "";//메세지 보낸 시각
+	let unreads = 0;//안읽은 메세지 수
 	$(document).ready(function(){
 		let reading = firebase.database().ref("chatrooms").orderByChild("users/"+nickname).equalTo(true);
 		reading.on('child_added', test_child_added);
@@ -58,6 +59,10 @@
 		key = data.key;
 		let userData = firebase.database().ref("chatrooms/"+key).child("users");
 		let msgData = firebase.database().ref("chatrooms/"+key).child("comments").limitToLast(1);
+		let readData = firebase.database().ref("chatrooms/"+key+"/unread/"+nickname);
+		readData.get().then(function(snapshot){
+			$("#"+key).children("a").children("i").text(snapshot.val());
+		});
 		msgData.once('value', function(data){
 			if(data.val()!=null) {
 				msgData.once('child_added', getMsgData);
@@ -70,7 +75,7 @@
 		            "</p>" +
 		            "<p class='time'>" + timestamp + "<br>" +
 		            "</p>" +
-		            "<a href=\"#!\" onclick=\"fn_delete_data('"+key+"')\"class=\"secondary-content\"><i class=\"material-icons\">grade</i></a>"+
+		            "<a href=\"#!\" onclick=\"fn_delete_data('"+key+"')\"class=\"secondary-content\"><i id='unreads' style='background:red; color:white;'>"+unreads+"</i></a>"+
 		            "</li>";
 		        $(".collection").append(html);
 			}
@@ -81,6 +86,10 @@
 		key = data.key;
 		let userData = firebase.database().ref("chatrooms/"+key).child("users");
 		let msgData = firebase.database().ref("chatrooms/"+key).child("comments").limitToLast(1);
+		let readData = firebase.database().ref("chatrooms/"+key+"/unread/"+nickname);
+		readData.get().then(function(snapshot){
+			$("#"+key).children("a").children("i").text(snapshot.val());
+		});
 		msgData.once('child_added', getMsgData);
 		userData.once('child_added', getUserData);
         $("#"+key+" > .time").text(timestamp);
