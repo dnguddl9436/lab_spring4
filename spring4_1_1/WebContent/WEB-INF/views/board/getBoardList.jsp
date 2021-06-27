@@ -624,7 +624,6 @@ else{//조회 결과가 있는데....
 	    <script
     src="https://maps.googleapis.com/maps/api/js?key=AIzaSyC4pd9w90oFRuCZOILRd07MBwVAthwIbIA&callback=initMap&region=kr"
     async></script>
-    <script src="main.js"></script>
     <div id="tb_board" style="padding:2px 5px;">
         <a id="btn_sel" href="#" class="easyui-linkbutton" iconCls="icon-search" plain="true">조회</a>
         <a id="btn_ins" href="#" class="easyui-linkbutton" iconCls="icon-add" plain="true">입력</a>

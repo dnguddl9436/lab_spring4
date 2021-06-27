@@ -30,6 +30,17 @@
 .collection {
 	cursor: pointer;
 }
+
+#unreads {
+	background-color: red;
+	color: white;
+	font-weight: bold;
+	font-style : normal;
+	border-radius: 10px;
+	display: inline-block;
+	text-align: center;
+	padding: 0px 10px;
+}
 </style>
 <title>채팅방 목록</title>
 </head>
@@ -48,7 +59,7 @@
 	let key = "";//채팅방 고유 키
 	let lastMsg = "";//마지막 메세지
 	let timestamp = "";//메세지 보낸 시각
-	let unreads = 0;//안읽은 메세지 수
+	let unreads = "";//안읽은 메세지 수
 	$(document).ready(function(){
 		let reading = firebase.database().ref("chatrooms").orderByChild("users/"+nickname).equalTo(true);
 		reading.on('child_added', test_child_added);
@@ -61,7 +72,10 @@
 		let msgData = firebase.database().ref("chatrooms/"+key).child("comments").limitToLast(1);
 		let readData = firebase.database().ref("chatrooms/"+key+"/unread/"+nickname);
 		readData.get().then(function(snapshot){
-			$("#"+key).children("a").children("i").text(snapshot.val());
+			if(snapshot.val()!=0)
+				$("#"+key).children("a").children("i").text(snapshot.val());
+			else
+				$("#"+key).children("a").children("i").text("");
 		});
 		msgData.once('value', function(data){
 			if(data.val()!=null) {
@@ -75,7 +89,7 @@
 		            "</p>" +
 		            "<p class='time'>" + timestamp + "<br>" +
 		            "</p>" +
-		            "<a href=\"#!\" onclick=\"fn_delete_data('"+key+"')\"class=\"secondary-content\"><i id='unreads' style='background:red; color:white;'>"+unreads+"</i></a>"+
+		            "<a href=\"#!\" onclick=\"fn_delete_data('"+key+"')\"class=\"secondary-content\"><i id='unreads'>"+unreads+"</i></a>"+
 		            "</li>";
 		        $(".collection").append(html);
 			}
@@ -88,7 +102,10 @@
 		let msgData = firebase.database().ref("chatrooms/"+key).child("comments").limitToLast(1);
 		let readData = firebase.database().ref("chatrooms/"+key+"/unread/"+nickname);
 		readData.get().then(function(snapshot){
-			$("#"+key).children("a").children("i").text(snapshot.val());
+			if(snapshot.val()!=0)
+				$("#"+key).children("a").children("i").text(snapshot.val());
+			else
+				$("#"+key).children("a").children("i").text("");
 		});
 		msgData.once('child_added', getMsgData);
 		userData.once('child_added', getUserData);
