@@ -89,12 +89,6 @@ html, body {
 	background-color: #536a8a;
 	display: fixed;
 }
-.img_inserted {
-	min-width: 100px;
-	min-height: 100px;
-	max-width: 350px;
-	max-height: 350px;
-}
 #profile {
 	width: 40px;
 	height: 40px;
@@ -132,51 +126,25 @@ html, body {
 
 
 	function submitImg(){
-		document.querySelector("#input_file").value = "";
 		document.querySelector("#input_file").click();
 	}
 	$(document).ready(function(){
-		//이미지 전송
-		document.querySelector('#input_file').addEventListener('change', e => {
-			let reading = firebase.database().ref("chatrooms/" + roomKey + "/comments");
-			let readingKey = reading.push().key;
-		    selectedFile = e.target.files[0];
-		    console.log("fiels"+e.target.files[0]);
-		    console.log("res"+e.target.result);
-			let storageRef = firebase.storage().ref("chatrooms/"+roomKey+"/comments/"+readingKey+"/"+selectedFile.name).put(selectedFile);
-		    storageRef.on('state_changed', function(snapshot){
-		    	  let progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
-		    	  console.log('Upload is ' + progress + '% done');
-		    	  switch (snapshot.state) {
-		    	    case firebase.storage.TaskState.PAUSED: // or 'paused'
-		    	      console.log('Upload is paused');
-		    	      break;
-		    	    case firebase.storage.TaskState.RUNNING: // or 'running'
-		    	      console.log('Upload is running');
-		    	      break;
-		    	  }
-		    	}, function(error) {
-		    		console.log("error="+error);
-		    	}, function() {
-		    	  storageRef.snapshot.ref.getDownloadURL().then(function(downloadURL) {
-		    	    console.log('File available at', downloadURL);
+		
 
-				    //이미지를 담을 메세지 전송
-					reading.child(readingKey).set({
-						message : selectedFile.name,
-						type : "i",
-						timestamp : getTime(),
-						uid : nickname,
-						read : 1
-					});
-					
-					//unread를 1씩 올려주는 트랜잭션
-					let updates = {};
-					updates["chatrooms/"+roomKey+"/unread/"+dest] = firebase.database.ServerValue.increment(1);
-					firebase.database().ref().update(updates);
-		    	  });
-		    	});
-			
+		let storageRef = firebase.storage().ref("chatrooms/"+roomKey);
+		document.querySelector('#input_file').addEventListener('change', e => {
+		    selectedFile = e.target.files[0];
+		    storageRef
+	        .child(`images/${selectedFile.name}`)
+	        .put(selectedFile)
+	        .on('state_changed', snapshot => {
+	                                    console.log(snapshot)
+	                                }, error => {
+	                                    console.log(error);
+	                                }, () => {
+	                                    console.log('성공');
+	                                }
+	        );
 		});
 		
 		if(roomKey=="null") { //채팅방 고유 키를 받아오지 못하는 2가지 경우
@@ -235,9 +203,6 @@ html, body {
 			let sender = comments.val().uid;//메세지 보낸 유저의 닉네임
 			let read = comments.val().read;//메세지 읽음 표시
 	        let html = "";
-			//타입이 있으면(이미지라면) 이미지 삽입 함수 실행
-			if(comments.val().type!=null)
-				insertImg(msgKey, msg, sender);
 			//날짜(하루단위)가 같지않으면 날짜변경선 생성
 			if(prevDay!=dayStamp) {
 				html += "<div class='timeline'>"+dayStamp+"</div>";
@@ -271,18 +236,6 @@ html, body {
 			prevSender = sender;
 		});
 		updateRead();
-	}
-	//이미지 메세지 변환
-	function insertImg(msgKey, msg, sender){
-		let storageRef = firebase.storage().ref("chatrooms/"+roomKey+"/comments/"+msgKey+"/"+msg);
-		storageRef.getDownloadURL().then(function(url) {
-			let html = "<a href='"+url+"' target='blank'><img src='"+url+"' class='img_inserted'/></a>";
-			if(nickname==sender)
-				$("#"+msgKey).children(".me").html(html);
-			else
-				$("#"+msgKey).children(".dest").html(html);
-			$('.col').scrollTop(document.querySelector(".col").scrollHeight);
-		});
 	}
 	//메세지 감시하다가 읽으면 읽음표시 없애기
 	function updateRead(){
@@ -345,7 +298,7 @@ html, body {
           <ul class="collection"  style="padding:0; margin:0; border:none;"></ul>
         </div>
     <div align="center" style="background-color: white; height:10%; vertical-align: middle;">
-	    	<input type="file" id="input_file" style="display:none;" accept="image/*"/>
+	    	<input type="file" id="input_file" style="display:none;">
 	    	<img src="../pds/insert_photo.png" onclick="submitImg()" id="img_insert"/>
 	    <input id="input_msg" onkeyup="enterkey();" style="width:80%; padding:10px;">
 	    <button id="btn_msg" style="width:10%;" onClick="sendMsg()">전송</button>
